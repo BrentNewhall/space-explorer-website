@@ -73,7 +73,7 @@ function updateCameraPosition( movementSpeed ) {
 	}
 }
 
-function gravity() {
+function gravity(camera) {
 	const raycaster = new THREE.Raycaster();
 	const direction = new THREE.Vector3(0, -1, 0);
 	raycaster.set(camera.position, direction);
@@ -88,6 +88,22 @@ function gravity() {
 		}
 	}
 }
+
+function dropObject(object) {
+	const raycaster = new THREE.Raycaster();
+	const direction = new THREE.Vector3(0, -1, 0);
+	raycaster.set(object.position, direction);
+	const intersects = raycaster.intersectObjects(scene.children);
+	if(intersects.length > 0) {
+		const distance = intersects[0].distance;
+		console.log(distance);
+		console.log(object.position);
+		if(distance > 0.1) {
+			object.position.y -= distance + 0.54;
+		}
+		console.log(object.position);
+	}
+}	
 
 function findNearbyArtifacts(artifactObjects,artifactData) {
 	const raycaster = new THREE.Raycaster();
@@ -117,7 +133,7 @@ function collectArtifact() {
 }
 
 function animate() {
-	gravity();
+	gravity(camera);
 	updateCameraPosition( movementSpeed );
 	requestAnimationFrame( animate );
 	findNearbyArtifacts( artifactObjects, artifactData );
@@ -155,14 +171,29 @@ const texture = textureLoader.load( 'eso0932a-1.jpg', () => {
 
 // Load artifact
 loader.load( 'artifact3.gltf', function ( gltf ) {
-	gltf.scene.position.set(1, 0.01, 2);
+	/* gltf.scene.position.set(1, 1, 2);
+	gltf.scene.position.set(Math.random() * 3, 0.005, Math.random() * 3 + 1);
 	gltf.scene.scale.set(0.05, 0.05, 0.05);
 	artifactObjects.push(gltf.scene);
 	artifactData.push({nearby: false});
-	scene.add( gltf.scene );
-}, undefined, function ( error ) {
+	scene.add( gltf.scene ); */
+	for( let i = 0; i < 5; i++ ) {
+		generateArtifacts( scene,gltf.scene );
+	}
+	//dropObject(gltf.scene);
+}
+, undefined, function ( error ) {
 	console.error( error );
 });
+
+function generateArtifacts(scene,originalObject) {
+	let object = originalObject.clone();
+	object.position.set(Math.random() * 8, 0.005, Math.random() * 4);
+	object.scale.set(0.05, 0.05, 0.05);
+	artifactObjects.push(object);
+	artifactData.push({nearby: false});
+	scene.add( object );
+}
 
 function updateStatus() {
 	document.getElementById("status").innerHTML = "Artifacts: " + artifactsCollected;
