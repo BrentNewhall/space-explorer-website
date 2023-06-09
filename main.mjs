@@ -4,9 +4,8 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({canvas: document.getElementById("canvas"), alpha: true});
 renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
 
 /* const geometry = new THREE.BoxGeometry( 1, 1, 1 );
 const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
@@ -14,7 +13,8 @@ const cube = new THREE.Mesh( geometry, material );
 scene.add( cube ); */
 
 // Add sun
-const light = new THREE.DirectionalLight( 0xffffff, 1 );
+//const light = new THREE.DirectionalLight( 0xffffff, 1 );
+const light = new THREE.PointLight( 0xffffff, 1, 100 );
 light.position.set( 1, 1, 1 );
 scene.add( light );
 
@@ -134,6 +134,14 @@ loader.load( 'map1.gltf', function ( gltf ) {
 	scene.add( gltf.scene );
 }, undefined, function ( error ) {
 	console.error( error );
+});
+
+// Load sky
+const textureLoader = new THREE.TextureLoader();
+const texture = textureLoader.load( 'eso0932a-1.jpg', () => {
+	const rt = new THREE.WebGLCubeRenderTarget(texture.image.height);
+	rt.fromEquirectangularTexture(renderer, texture);
+	scene.background = rt.texture;
 });
 
 // Load artifact

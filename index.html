@@ -6,6 +6,9 @@
     <title>Space Explorer</title>
     <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
     <style>
+      #canvas {
+        background-color: black;
+      }
       #status {
         font-family: sans-serif;
         position: fixed;
@@ -29,6 +32,7 @@
 <body>
 
 <header id="status">Artifacts: 0</header>
+<canvas id="canvas"></canvas>
 
 <script type="module" src="/main.mjs"></script>
 </body>
