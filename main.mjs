@@ -15,7 +15,7 @@ scene.add( cube ); */
 // Add sun
 //const light = new THREE.DirectionalLight( 0xffffff, 1 );
 const light = new THREE.PointLight( 0xffffff, 1, 100 );
-light.position.set( 1, 1, 1 );
+light.position.set( 1, 1, 5 );
 scene.add( light );
 
 camera.position.y = 0.1;
@@ -132,6 +132,15 @@ function animate() {
 const loader = new GLTFLoader();
 loader.load( 'map1.gltf', function ( gltf ) {
 	scene.add( gltf.scene );
+	const scene1 = gltf.scene.clone();
+	scene1.position.set(10, 0, 0);
+	scene.add( scene1 );
+	const scene2 = gltf.scene.clone();
+	scene2.position.set(10, 0, -10);
+	scene.add( scene2 );
+	const scene3 = gltf.scene.clone();
+	scene3.position.set(0, 0, -10);
+	scene.add( scene3 );
 }, undefined, function ( error ) {
 	console.error( error );
 });
