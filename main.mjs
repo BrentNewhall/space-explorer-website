@@ -14,13 +14,16 @@ const cube = new THREE.Mesh( geometry, material );
 scene.add( cube ); */
 
 // Add sun
-
 const light = new THREE.DirectionalLight( 0xffffff, 1 );
-light.position.set( 0, 1, 0 );
+light.position.set( 1, 1, 1 );
 scene.add( light );
 
 camera.position.y = 0.1;
 camera.position.z = 5;
+
+let artifactObjects = [];
+let artifactData = [];
+let artifactsCollected = 0;
 
 let movementSpeed = 0.01;
 
@@ -28,7 +31,8 @@ const keys = {
 	KeyW: false,
 	KeyS: false,
 	KeyA: false,
-	KeyD: false
+	KeyD: false,
+	KeyC: false
 }
 
 function setup() {
@@ -64,6 +68,9 @@ function updateCameraPosition( movementSpeed ) {
 	if( keys.KeyD ) {
 		camera.rotation.y -= movementSpeed;
 	}
+	if( keys.KeyC ) {
+		collectArtifact();
+	}
 }
 
 function gravity() {
@@ -82,10 +89,38 @@ function gravity() {
 	}
 }
 
+function findNearbyArtifacts(artifactObjects,artifactData) {
+	const raycaster = new THREE.Raycaster();
+	const direction = new THREE.Vector3(0, -1, 0);
+	raycaster.set(camera.position, direction);
+	for( let index = 0; index < artifactObjects.length; index++ ) {
+		const distance = artifactObjects[index].position.distanceTo(camera.position);
+		if( distance < 0.4 ) {
+			artifactData[index].nearby = true;
+		}
+		else {
+			artifactData[index].nearby = false;
+		}
+	}
+}
+
+function collectArtifact() {
+	for( let index = 0; index < artifactData.length; index++ ) {
+		if( artifactData[index].nearby ) {
+			scene.remove( artifactObjects[index] );
+			artifactObjects.splice(index, 1);
+			artifactData.splice(index, 1);
+			artifactsCollected += 1;
+			updateStatus();
+		}
+	}
+}
+
 function animate() {
 	gravity();
 	updateCameraPosition( movementSpeed );
 	requestAnimationFrame( animate );
+	findNearbyArtifacts( artifactObjects, artifactData );
 
 	//cube.rotation.x += 0.01;
 	//cube.rotation.y += 0.01;
@@ -100,6 +135,21 @@ loader.load( 'map1.gltf', function ( gltf ) {
 }, undefined, function ( error ) {
 	console.error( error );
 });
+
+// Load artifact
+loader.load( 'artifact.gltf', function ( gltf ) {
+	gltf.scene.position.set(1, 0.02, 2);
+	gltf.scene.scale.set(0.05, 0.05, 0.05);
+	artifactObjects.push(gltf.scene);
+	artifactData.push({nearby: false});
+	scene.add( gltf.scene );
+}, undefined, function ( error ) {
+	console.error( error );
+});
+
+function updateStatus() {
+	document.getElementById("status").innerHTML = "Artifacts collected: " + artifactsCollected;
+}
 
 setup();
 animate();

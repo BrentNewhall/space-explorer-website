@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Space Explorer</title>
     <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+    <style>
+      #status {
+        font-family: sans-serif;
+        position: fixed;
+        left: 0.5em;
+        top: 0.5em;
+        padding: 0.25em;
+        color: white;
+        background-color: rgba(128, 128, 128, 0.5);
+      }
+    </style>
 
 <script type="importmap">
   {
@@ -16,6 +27,8 @@
 </script>
 </head>
 <body>
+
+<header id="status">Artifacts: 0</header>
 
 <script type="module" src="/main.mjs"></script>
 </body>
