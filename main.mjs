@@ -66,7 +66,24 @@ function updateCameraPosition( movementSpeed ) {
 	}
 }
 
+function gravity() {
+	const raycaster = new THREE.Raycaster();
+	const direction = new THREE.Vector3(0, -1, 0);
+	raycaster.set(camera.position, direction);
+	const intersects = raycaster.intersectObjects(scene.children);
+	if(intersects.length > 0) {
+		const distance = intersects[0].distance;
+		if(distance < 0.1) {
+			camera.position.y += 0.02;
+		}
+		else if(distance > 0.15) {
+			camera.position.y -= 0.005;
+		}
+	}
+}
+
 function animate() {
+	gravity();
 	updateCameraPosition( movementSpeed );
 	requestAnimationFrame( animate );
 
