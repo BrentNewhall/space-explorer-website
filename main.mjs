@@ -171,16 +171,9 @@ const texture = textureLoader.load( 'eso0932a-1.jpg', () => {
 
 // Load artifact
 loader.load( 'artifact3.gltf', function ( gltf ) {
-	/* gltf.scene.position.set(1, 1, 2);
-	gltf.scene.position.set(Math.random() * 3, 0.005, Math.random() * 3 + 1);
-	gltf.scene.scale.set(0.05, 0.05, 0.05);
-	artifactObjects.push(gltf.scene);
-	artifactData.push({nearby: false});
-	scene.add( gltf.scene ); */
 	for( let i = 0; i < 5; i++ ) {
 		generateArtifacts( scene,gltf.scene );
 	}
-	//dropObject(gltf.scene);
 }
 , undefined, function ( error ) {
 	console.error( error );
@@ -193,6 +186,7 @@ function generateArtifacts(scene,originalObject) {
 	artifactObjects.push(object);
 	artifactData.push({nearby: false});
 	scene.add( object );
+	//dropObject(object);
 }
 
 function updateStatus() {
