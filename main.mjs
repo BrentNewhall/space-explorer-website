@@ -137,8 +137,8 @@ loader.load( 'map1.gltf', function ( gltf ) {
 });
 
 // Load artifact
-loader.load( 'artifact.gltf', function ( gltf ) {
-	gltf.scene.position.set(1, 0.02, 2);
+loader.load( 'artifact3.gltf', function ( gltf ) {
+	gltf.scene.position.set(1, 0.01, 2);
 	gltf.scene.scale.set(0.05, 0.05, 0.05);
 	artifactObjects.push(gltf.scene);
 	artifactData.push({nearby: false});
@@ -148,7 +148,7 @@ loader.load( 'artifact.gltf', function ( gltf ) {
 });
 
 function updateStatus() {
-	document.getElementById("status").innerHTML = "Artifacts collected: " + artifactsCollected;
+	document.getElementById("status").innerHTML = "Artifacts: " + artifactsCollected;
 }
 
 setup();
