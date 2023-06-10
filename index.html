@@ -6,8 +6,15 @@
     <title>Space Explorer</title>
     <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
     <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
       #canvas {
         background-color: black;
+        position: fixed;
+        left: 0px;
+        top: 0px;
       }
       #status {
         font-family: sans-serif;
@@ -17,6 +24,7 @@
         padding: 0.25em;
         color: white;
         background-color: rgba(128, 128, 128, 0.5);
+        z-index: 1;
       }
     </style>
 
