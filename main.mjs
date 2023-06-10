@@ -75,10 +75,10 @@ function updateCameraPosition( movementSpeed ) {
 		}
 	}
 	if( keys.KeyA ) {
-		camera.rotation.y += movementSpeed;
+		camera.rotation.y += movementSpeed * 2;
 	}
 	if( keys.KeyD ) {
-		camera.rotation.y -= movementSpeed;
+		camera.rotation.y -= movementSpeed * 2;
 	}
 	if( keys.KeyC ) {
 		collectArtifact();
