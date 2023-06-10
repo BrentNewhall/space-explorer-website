@@ -53,14 +53,26 @@ function updateCameraPosition( movementSpeed ) {
 	if( keys.KeyW ) {
 		// Get the direction vector of the camera
 		const direction = camera.getWorldDirection(new THREE.Vector3());
-		// Scale the direction vector by the movement speed and add it to the camera's position
-		camera.position.add(direction.multiplyScalar(movementSpeed));
+		// Check for any objects in front of the camera
+		const raycaster = new THREE.Raycaster();
+		raycaster.set(camera.position, direction);
+		const intersects = raycaster.intersectObjects(scene.children);
+		if( intersects.length === 0  ||  intersects[0].distance > 0.15 ) {
+			// Scale the direction vector by the movement speed and add it to the camera's position
+			camera.position.add(direction.multiplyScalar(movementSpeed));
+		}
 	}
 	if( keys.KeyS ) {
 		// Get the direction vector of the camera
 		const direction = camera.getWorldDirection(new THREE.Vector3()).negate();
-		// Scale the direction vector by the movement speed and add it to the camera's position
-		camera.position.add(direction.multiplyScalar(movementSpeed));
+		// Check for any objects in front of the camera
+		const raycaster = new THREE.Raycaster();
+		raycaster.set(camera.position, direction);
+		const intersects = raycaster.intersectObjects(scene.children);
+		if( intersects.length === 0  ||  intersects[0].distance > 0.15 ) {
+			// Scale the direction vector by the movement speed and add it to the camera's position
+			camera.position.add(direction.multiplyScalar(movementSpeed));
+		}
 	}
 	if( keys.KeyA ) {
 		camera.rotation.y += movementSpeed;
@@ -80,10 +92,10 @@ function gravity(camera) {
 	const intersects = raycaster.intersectObjects(scene.children);
 	if(intersects.length > 0) {
 		const distance = intersects[0].distance;
-		if(distance < 0.1) {
+		if(distance < 0.05) {
 			camera.position.y += 0.02;
 		}
-		else if(distance > 0.15) {
+		else if(distance > 0.1) {
 			camera.position.y -= 0.005;
 		}
 	}
@@ -127,6 +139,7 @@ function collectArtifact() {
 			artifactObjects.splice(index, 1);
 			artifactData.splice(index, 1);
 			artifactsCollected += 1;
+			playSound("equip");
 			updateStatus();
 		}
 	}
@@ -163,11 +176,22 @@ loader.load( 'map1.gltf', function ( gltf ) {
 
 // Load sky
 const textureLoader = new THREE.TextureLoader();
-const texture = textureLoader.load( 'eso0932a-1.jpg', () => {
+const texture = textureLoader.load( 'sky4.jpg', () => {
 	const rt = new THREE.WebGLCubeRenderTarget(texture.image.height);
 	rt.fromEquirectangularTexture(renderer, texture);
 	scene.background = rt.texture;
 });
+
+// Load tower
+loader.load( 'tower.gltf', function ( gltf ) {
+	gltf.scene.position.set(5, 0, -5);
+	gltf.scene.scale.set(0.05, 0.05, 0.05);
+	scene.add( gltf.scene );
+}
+, undefined, function ( error ) {
+	console.error( error );
+});
+
 
 // Load artifact
 loader.load( 'artifact4.gltf', function ( gltf1 ) {
@@ -197,6 +221,14 @@ function generateArtifacts(scene,originalObject1, originalObject2) {
 
 function updateStatus() {
 	document.getElementById("status").innerHTML = "Artifacts: " + artifactsCollected;
+}
+
+function playSound(sound) {
+	const element = document.getElementById('sfx-' + sound);
+	if( typeof element !== 'undefined'  &&  element !== null )
+		element.play();
+	else
+		console.log( "Sound not found: " + sound );
 }
 
 setup();
