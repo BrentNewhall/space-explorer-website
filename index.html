@@ -5,28 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Space Explorer</title>
     <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-      }
-      #canvas {
-        background-color: black;
-        position: fixed;
-        left: 0px;
-        top: 0px;
-      }
-      #status {
-        font-family: sans-serif;
-        position: fixed;
-        left: 0.5em;
-        top: 0.5em;
-        padding: 0.25em;
-        color: white;
-        background-color: rgba(128, 128, 128, 0.5);
-        z-index: 1;
-      }
-    </style>
+    <link href="style.css" rel="stylesheet" />
 
 <script type="importmap">
   {
@@ -39,7 +18,23 @@
 </head>
 <body>
 
-<header id="status">Artifacts: 0</header>
+<div id="loading" class="panel centered-panel">
+  Loading...
+  <div class="progress-bar"><div id="progress"></div></div>
+</div>
+
+<div id="help" class="panel centered-panel">
+  <div class="key"><key>W</key> Move forwards</div>
+  <div class="key"><key>A</key> Move backwards</div>
+  <div class="key"><key>S</key> Turn left</div>
+  <div class="key"><key>D</key> Turn right</div>
+  <div class="key"><key>C</key> Collect artifact</div>
+</div>
+
+<footer>
+  <span class="footer-section" id="status">Artifacts: 0</span>
+  <span class="footer-section" id="help-prompt"><key>?</key> for help</span>
+</footer>
 <canvas id="canvas"></canvas>
 
 <audio style="display: none;" id="sfx-equip" preload src="item-equip-6904.mp3"></audio>

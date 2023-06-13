@@ -4,13 +4,11 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
-const renderer = new THREE.WebGLRenderer({canvas: document.getElementById("canvas"), alpha: true});
+const renderer = new THREE.WebGLRenderer({
+	canvas: document.getElementById("canvas"),
+	alpha: true
+});
 renderer.setSize( window.innerWidth, window.innerHeight );
-
-/* const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-const cube = new THREE.Mesh( geometry, material );
-scene.add( cube ); */
 
 // Add sun
 //const light = new THREE.DirectionalLight( 0xffffff, 1 );
@@ -21,6 +19,7 @@ scene.add( light );
 camera.position.y = 0.1;
 camera.position.z = 5;
 
+const numArtifacts = 10;
 let artifactObjects = [];
 let artifactData = [];
 let artifactsCollected = 0;
@@ -32,7 +31,7 @@ const keys = {
 	KeyS: false,
 	KeyA: false,
 	KeyD: false,
-	KeyC: false
+	KeyC: false,
 }
 
 function setup() {
@@ -41,10 +40,16 @@ function setup() {
 		if( e.code in keys ) {
 			keys[e.code] = true;
 		}
+		if( e.code === 'Slash' ) {
+			document.getElementById("help").style.display = 'block';
+		}
 	});
 	window.addEventListener('keyup', (e) => {
 		if( e.code in keys ) {
 			keys[e.code] = false;
+		}
+		if( e.code === 'Slash' ) {
+			document.getElementById("help").style.display = 'none';
 		}
 	});
 }
@@ -56,10 +61,10 @@ function updateCameraPosition( movementSpeed ) {
 		// Check for any objects in front of the camera
 		const raycaster = new THREE.Raycaster();
 		raycaster.set(camera.position, direction);
-		const intersects = raycaster.intersectObjects(scene.children);
+		const intersects = raycaster.intersectObjects( scene.children );
 		if( intersects.length === 0  ||  intersects[0].distance > 0.15 ) {
 			// Scale the direction vector by the movement speed and add it to the camera's position
-			camera.position.add(direction.multiplyScalar(movementSpeed));
+			camera.position.add( direction.multiplyScalar( movementSpeed ) );
 		}
 	}
 	if( keys.KeyS ) {
@@ -67,8 +72,8 @@ function updateCameraPosition( movementSpeed ) {
 		const direction = camera.getWorldDirection(new THREE.Vector3()).negate();
 		// Check for any objects in front of the camera
 		const raycaster = new THREE.Raycaster();
-		raycaster.set(camera.position, direction);
-		const intersects = raycaster.intersectObjects(scene.children);
+		raycaster.set( camera.position, direction );
+		const intersects = raycaster.intersectObjects( scene.children );
 		if( intersects.length === 0  ||  intersects[0].distance > 0.15 ) {
 			// Scale the direction vector by the movement speed and add it to the camera's position
 			camera.position.add(direction.multiplyScalar(movementSpeed));
@@ -87,15 +92,15 @@ function updateCameraPosition( movementSpeed ) {
 
 function gravity(camera) {
 	const raycaster = new THREE.Raycaster();
-	const direction = new THREE.Vector3(0, -1, 0);
+	const direction = new THREE.Vector3( 0, -1, 0 );
 	raycaster.set(camera.position, direction);
 	const intersects = raycaster.intersectObjects(scene.children);
-	if(intersects.length > 0) {
+	if( intersects.length > 0 ) {
 		const distance = intersects[0].distance;
-		if(distance < 0.05) {
+		if( distance < 0.05 ) {
 			camera.position.y += 0.02;
 		}
-		else if(distance > 0.1) {
+		else if( distance > 0.1 ) {
 			camera.position.y -= 0.005;
 		}
 	}
@@ -105,21 +110,18 @@ function dropObject(object) {
 	const raycaster = new THREE.Raycaster();
 	const direction = new THREE.Vector3(0, -1, 0);
 	raycaster.set(object.position, direction);
-	const intersects = raycaster.intersectObjects(scene.children);
-	if(intersects.length > 0) {
+	const intersects = raycaster.intersectObjects( scene.children );
+	if( intersects.length > 0 ) {
 		const distance = intersects[0].distance;
-		console.log(distance);
-		console.log(object.position);
-		if(distance > 0.1) {
-			object.position.y -= distance + 0.54;
+		if( distance > 0.1 ) {
+			object.position.y -= distance;
 		}
-		console.log(object.position);
 	}
 }	
 
 function findNearbyArtifacts(artifactObjects,artifactData) {
 	const raycaster = new THREE.Raycaster();
-	const direction = new THREE.Vector3(0, -1, 0);
+	const direction = new THREE.Vector3( 0, -1, 0 );
 	raycaster.set(camera.position, direction);
 	for( let index = 0; index < artifactObjects.length; index++ ) {
 		const distance = artifactObjects[index].position.distanceTo(camera.position);
@@ -136,43 +138,71 @@ function collectArtifact() {
 	for( let index = 0; index < artifactData.length; index++ ) {
 		if( artifactData[index].nearby ) {
 			scene.remove( artifactObjects[index] );
-			artifactObjects.splice(index, 1);
-			artifactData.splice(index, 1);
+			artifactObjects.splice( index, 1 );
+			artifactData.splice( index, 1 );
 			artifactsCollected += 1;
 			playSound("equip");
-			updateStatus();
+			updateStatus(numArtifacts);
 		}
 	}
 }
+
 
 function animate() {
 	gravity(camera);
 	updateCameraPosition( movementSpeed );
 	requestAnimationFrame( animate );
 	findNearbyArtifacts( artifactObjects, artifactData );
-
-	//cube.rotation.x += 0.01;
-	//cube.rotation.y += 0.01;
-
 	renderer.render( scene, camera );
 }
 
 // Load map
-const loader = new GLTFLoader();
-loader.load( 'map1.gltf', function ( gltf ) {
-	scene.add( gltf.scene );
-	const scene1 = gltf.scene.clone();
-	scene1.position.set(10, 0, 0);
-	scene.add( scene1 );
-	const scene2 = gltf.scene.clone();
-	scene2.position.set(10, 0, -10);
-	scene.add( scene2 );
-	const scene3 = gltf.scene.clone();
-	scene3.position.set(0, 0, -10);
-	scene.add( scene3 );
-}, undefined, function ( error ) {
-	console.error( error );
-});
+let worldMap = [
+	[0, 0],
+	[0, 0]
+];
+
+function addMapsToScene( tiles, worldMap, scene ) {
+	let x = 0;
+	let z = 0;
+	for( let row of worldMap ) {
+		for( let cell of row ) {
+			const tile = tiles[cell].clone();
+			tile.position.set( x, 0, z );
+			scene.add( tile );
+			x += 10;
+		}
+		x = 0;
+		z += 10;
+	}
+	updateLoadingBar();
+}
+function loadTiles(modelPaths, worldMap, scene) {
+	// Array to hold the loaded GLTF models
+	const loadedModels = [];
+
+	// Create an array of promises for loading the models
+	const loadPromises = modelPaths.map( (modelPath) => {
+		return new Promise( (resolve, reject) => {
+			const loader = new GLTFLoader();
+			loader.load( modelPath, (gltf) => {
+				loadedModels.push( gltf.scene ); // Store the loaded model
+				resolve(); // Resolve the promise once the model is loaded
+			}, undefined, reject);
+		});
+	});
+
+	// Wait for all promises to resolve
+	Promise.all( loadPromises )
+	.then(() => {
+		addMapsToScene( loadedModels, worldMap, scene );
+	})
+	.catch((error) => {
+		// Error occurred during loading
+		console.error( 'Error loading models:', error );
+	});
+}
+const tiles = loadTiles( ['map1.gltf'], worldMap, scene );
 
 // Load sky
 const textureLoader = new THREE.TextureLoader();
@@ -180,47 +210,53 @@ const texture = textureLoader.load( 'sky4.jpg', () => {
 	const rt = new THREE.WebGLCubeRenderTarget(texture.image.height);
 	rt.fromEquirectangularTexture(renderer, texture);
 	scene.background = rt.texture;
+	updateLoadingBar();
 });
+
+const loader = new GLTFLoader();
 
 // Load tower
 loader.load( 'tower.gltf', function ( gltf ) {
 	gltf.scene.position.set(5, 0, -5);
 	gltf.scene.scale.set(0.05, 0.05, 0.05);
 	scene.add( gltf.scene );
+	updateLoadingBar();
 }
 , undefined, function ( error ) {
 	console.error( error );
 });
 
 
-// Load artifact
+// Load artifacts
 loader.load( 'artifact4.gltf', function ( gltf1 ) {
 	loader.load( 'artifact5.gltf', function ( gltf2 ) {
-		for( let i = 0; i < 5; i++ ) {
+		for( let i = 0; i < numArtifacts; i++ ) {
 			generateArtifacts( scene, gltf1.scene, gltf2.scene );
 		}
+		updateStatus(numArtifacts);
+		updateLoadingBar();
 	});
 }
 , undefined, function ( error ) {
 	console.error( error );
 });
 
-function generateArtifacts(scene,originalObject1, originalObject2) {
+function generateArtifacts( scene, originalObject1, originalObject2 ) {
 	const rnd = Math.random();
 	let object = originalObject1.clone();
 	if( rnd < 0.5 ) {
 		object = originalObject2.clone();
 	}
-	object.position.set(Math.random() * 8, 0.005, Math.random() * 4);
-	object.scale.set(0.05, 0.05, 0.05);
-	artifactObjects.push(object);
-	artifactData.push({nearby: false});
+	object.position.set( Math.random() * 14 - 4, 5, Math.random() * 14 - 4 );
+	object.scale.set( 0.05, 0.05, 0.05 );
+	artifactObjects.push( object );
+	artifactData.push( { nearby: false } );
 	scene.add( object );
-	//dropObject(object);
+	dropObject( object );
 }
 
-function updateStatus() {
-	document.getElementById("status").innerHTML = "Artifacts: " + artifactsCollected;
+function updateStatus(numArtifacts) {
+	document.getElementById("status").innerHTML = `Artifacts: ${artifactsCollected}/${numArtifacts}`;
 }
 
 function playSound(sound) {
@@ -228,7 +264,22 @@ function playSound(sound) {
 	if( typeof element !== 'undefined'  &&  element !== null )
 		element.play();
 	else
-		console.log( "Sound not found: " + sound );
+		console.error( "Sound not found: " + sound );
+}
+
+function updateLoadingBar() {
+	const totalSteps = 4;
+	if( typeof updateLoadingBar.steps === 'undefined' ) {
+		updateLoadingBar.steps = 0;
+	}
+	updateLoadingBar.steps++;
+	if( updateLoadingBar.steps >= totalSteps ) {
+		document.getElementById("loading").style.display = "none";
+	}
+	else {
+		const width = Math.floor((updateLoadingBar.steps / totalSteps) * 100);
+		document.getElementById("progress").style.width = width + "%";
+	}
 }
 
 setup();
