@@ -32,7 +32,7 @@ const keys = {
 	KeyS: false,
 	KeyA: false,
 	KeyD: false,
-	KeyC: false
+	KeyC: false,
 }
 
 function setup() {
@@ -41,10 +41,16 @@ function setup() {
 		if( e.code in keys ) {
 			keys[e.code] = true;
 		}
+		if( e.code === 'Slash' ) {
+			document.getElementById("help").style.display = 'block';
+		}
 	});
 	window.addEventListener('keyup', (e) => {
 		if( e.code in keys ) {
 			keys[e.code] = false;
+		}
+		if( e.code === 'Slash' ) {
+			document.getElementById("help").style.display = 'none';
 		}
 	});
 }
