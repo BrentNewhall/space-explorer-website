@@ -7,11 +7,6 @@ const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.inner
 const renderer = new THREE.WebGLRenderer({canvas: document.getElementById("canvas"), alpha: true});
 renderer.setSize( window.innerWidth, window.innerHeight );
 
-/* const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-const cube = new THREE.Mesh( geometry, material );
-scene.add( cube ); */
-
 // Add sun
 //const light = new THREE.DirectionalLight( 0xffffff, 1 );
 const light = new THREE.PointLight( 0xffffff, 1, 100 );
@@ -157,10 +152,6 @@ function animate() {
 	updateCameraPosition( movementSpeed );
 	requestAnimationFrame( animate );
 	findNearbyArtifacts( artifactObjects, artifactData );
-
-	//cube.rotation.x += 0.01;
-	//cube.rotation.y += 0.01;
-
 	renderer.render( scene, camera );
 }
 
