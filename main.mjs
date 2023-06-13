@@ -4,7 +4,10 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
-const renderer = new THREE.WebGLRenderer({canvas: document.getElementById("canvas"), alpha: true});
+const renderer = new THREE.WebGLRenderer({
+	canvas: document.getElementById("canvas"),
+	alpha: true
+});
 renderer.setSize( window.innerWidth, window.innerHeight );
 
 // Add sun
@@ -58,10 +61,10 @@ function updateCameraPosition( movementSpeed ) {
 		// Check for any objects in front of the camera
 		const raycaster = new THREE.Raycaster();
 		raycaster.set(camera.position, direction);
-		const intersects = raycaster.intersectObjects(scene.children);
+		const intersects = raycaster.intersectObjects( scene.children );
 		if( intersects.length === 0  ||  intersects[0].distance > 0.15 ) {
 			// Scale the direction vector by the movement speed and add it to the camera's position
-			camera.position.add(direction.multiplyScalar(movementSpeed));
+			camera.position.add( direction.multiplyScalar( movementSpeed ) );
 		}
 	}
 	if( keys.KeyS ) {
@@ -69,8 +72,8 @@ function updateCameraPosition( movementSpeed ) {
 		const direction = camera.getWorldDirection(new THREE.Vector3()).negate();
 		// Check for any objects in front of the camera
 		const raycaster = new THREE.Raycaster();
-		raycaster.set(camera.position, direction);
-		const intersects = raycaster.intersectObjects(scene.children);
+		raycaster.set( camera.position, direction );
+		const intersects = raycaster.intersectObjects( scene.children );
 		if( intersects.length === 0  ||  intersects[0].distance > 0.15 ) {
 			// Scale the direction vector by the movement speed and add it to the camera's position
 			camera.position.add(direction.multiplyScalar(movementSpeed));
@@ -89,15 +92,15 @@ function updateCameraPosition( movementSpeed ) {
 
 function gravity(camera) {
 	const raycaster = new THREE.Raycaster();
-	const direction = new THREE.Vector3(0, -1, 0);
+	const direction = new THREE.Vector3( 0, -1, 0 );
 	raycaster.set(camera.position, direction);
 	const intersects = raycaster.intersectObjects(scene.children);
-	if(intersects.length > 0) {
+	if( intersects.length > 0 ) {
 		const distance = intersects[0].distance;
-		if(distance < 0.05) {
+		if( distance < 0.05 ) {
 			camera.position.y += 0.02;
 		}
-		else if(distance > 0.1) {
+		else if( distance > 0.1 ) {
 			camera.position.y -= 0.005;
 		}
 	}
@@ -107,10 +110,10 @@ function dropObject(object) {
 	const raycaster = new THREE.Raycaster();
 	const direction = new THREE.Vector3(0, -1, 0);
 	raycaster.set(object.position, direction);
-	const intersects = raycaster.intersectObjects(scene.children);
-	if(intersects.length > 0) {
+	const intersects = raycaster.intersectObjects( scene.children );
+	if( intersects.length > 0 ) {
 		const distance = intersects[0].distance;
-		if(distance > 0.1) {
+		if( distance > 0.1 ) {
 			object.position.y -= distance;
 		}
 	}
@@ -118,7 +121,7 @@ function dropObject(object) {
 
 function findNearbyArtifacts(artifactObjects,artifactData) {
 	const raycaster = new THREE.Raycaster();
-	const direction = new THREE.Vector3(0, -1, 0);
+	const direction = new THREE.Vector3( 0, -1, 0 );
 	raycaster.set(camera.position, direction);
 	for( let index = 0; index < artifactObjects.length; index++ ) {
 		const distance = artifactObjects[index].position.distanceTo(camera.position);
@@ -135,8 +138,8 @@ function collectArtifact() {
 	for( let index = 0; index < artifactData.length; index++ ) {
 		if( artifactData[index].nearby ) {
 			scene.remove( artifactObjects[index] );
-			artifactObjects.splice(index, 1);
-			artifactData.splice(index, 1);
+			artifactObjects.splice( index, 1 );
+			artifactData.splice( index, 1 );
 			artifactsCollected += 1;
 			playSound("equip");
 			updateStatus(numArtifacts);
@@ -179,24 +182,24 @@ function loadTiles(modelPaths, worldMap, scene) {
 	const loadedModels = [];
 
 	// Create an array of promises for loading the models
-	const loadPromises = modelPaths.map((modelPath) => {
-		return new Promise((resolve, reject) => {
+	const loadPromises = modelPaths.map( (modelPath) => {
+		return new Promise( (resolve, reject) => {
 			const loader = new GLTFLoader();
-			loader.load(modelPath, (gltf) => {
-				loadedModels.push(gltf.scene); // Store the loaded model
+			loader.load( modelPath, (gltf) => {
+				loadedModels.push( gltf.scene ); // Store the loaded model
 				resolve(); // Resolve the promise once the model is loaded
 			}, undefined, reject);
 		});
 	});
 
 	// Wait for all promises to resolve
-	Promise.all(loadPromises)
+	Promise.all( loadPromises )
 	.then(() => {
-		addMapsToScene(loadedModels, worldMap, scene)
+		addMapsToScene( loadedModels, worldMap, scene );
 	})
 	.catch((error) => {
 		// Error occurred during loading
-		console.error('Error loading models:', error);
+		console.error( 'Error loading models:', error );
 	});
 }
 const tiles = loadTiles( ['map1.gltf'], worldMap, scene );
@@ -224,7 +227,7 @@ loader.load( 'tower.gltf', function ( gltf ) {
 });
 
 
-// Load artifact
+// Load artifacts
 loader.load( 'artifact4.gltf', function ( gltf1 ) {
 	loader.load( 'artifact5.gltf', function ( gltf2 ) {
 		for( let i = 0; i < numArtifacts; i++ ) {
@@ -238,18 +241,18 @@ loader.load( 'artifact4.gltf', function ( gltf1 ) {
 	console.error( error );
 });
 
-function generateArtifacts(scene,originalObject1, originalObject2) {
+function generateArtifacts( scene, originalObject1, originalObject2 ) {
 	const rnd = Math.random();
 	let object = originalObject1.clone();
 	if( rnd < 0.5 ) {
 		object = originalObject2.clone();
 	}
-	object.position.set(Math.random() * 14 - 4, 5, Math.random() * 14 - 4);
-	object.scale.set(0.05, 0.05, 0.05);
-	artifactObjects.push(object);
-	artifactData.push({nearby: false});
+	object.position.set( Math.random() * 14 - 4, 5, Math.random() * 14 - 4 );
+	object.scale.set( 0.05, 0.05, 0.05 );
+	artifactObjects.push( object );
+	artifactData.push( { nearby: false } );
 	scene.add( object );
-	dropObject(object);
+	dropObject( object );
 }
 
 function updateStatus(numArtifacts) {
