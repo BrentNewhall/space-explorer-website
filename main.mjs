@@ -266,10 +266,10 @@ function playSound(sound) {
 }
 
 function updateLoadingBar() {
+	const totalSteps = 4;
 	if( typeof updateLoadingBar.steps === 'undefined' ) {
 		updateLoadingBar.steps = 0;
 	}
-	const totalSteps = 4;
 	updateLoadingBar.steps++;
 	if( updateLoadingBar.steps >= totalSteps ) {
 		document.getElementById("loading").style.display = "none";
