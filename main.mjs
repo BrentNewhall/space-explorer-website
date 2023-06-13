@@ -158,21 +158,51 @@ function animate() {
 }
 
 // Load map
-const loader = new GLTFLoader();
-loader.load( 'map1.gltf', function ( gltf ) {
-	scene.add( gltf.scene );
-	const scene1 = gltf.scene.clone();
-	scene1.position.set(10, 0, 0);
-	scene.add( scene1 );
-	const scene2 = gltf.scene.clone();
-	scene2.position.set(10, 0, -10);
-	scene.add( scene2 );
-	const scene3 = gltf.scene.clone();
-	scene3.position.set(0, 0, -10);
-	scene.add( scene3 );
-}, undefined, function ( error ) {
-	console.error( error );
-});
+let worldMap = [
+	[0, 0],
+	[0, 0]
+];
+
+function addMapsToScene( tiles, worldMap, scene ) {
+	let x = 0;
+	let z = 0;
+	for( let row of worldMap ) {
+		for( let cell of row ) {
+			const tile = tiles[cell].clone();
+			tile.position.set( x, 0, z );
+			scene.add( tile );
+			x += 10;
+		}
+		x = 0;
+		z -= 10;
+	}
+}
+function loadTiles(modelPaths, worldMap, scene) {
+	// Array to hold the loaded GLTF models
+	const loadedModels = [];
+
+	// Create an array of promises for loading the models
+	const loadPromises = modelPaths.map((modelPath) => {
+		return new Promise((resolve, reject) => {
+			const loader = new GLTFLoader();
+			loader.load(modelPath, (gltf) => {
+				loadedModels.push(gltf.scene); // Store the loaded model
+				resolve(); // Resolve the promise once the model is loaded
+			}, undefined, reject);
+		});
+	});
+
+	// Wait for all promises to resolve
+	Promise.all(loadPromises)
+	.then(() => {
+		addMapsToScene(loadedModels, worldMap, scene)
+	})
+	.catch((error) => {
+		// Error occurred during loading
+		console.error('Error loading models:', error);
+	});
+}
+const tiles = loadTiles( ['map1.gltf'], worldMap, scene );
 
 // Load sky
 const textureLoader = new THREE.TextureLoader();
@@ -181,6 +211,8 @@ const texture = textureLoader.load( 'sky4.jpg', () => {
 	rt.fromEquirectangularTexture(renderer, texture);
 	scene.background = rt.texture;
 });
+
+const loader = new GLTFLoader();
 
 // Load tower
 loader.load( 'tower.gltf', function ( gltf ) {
