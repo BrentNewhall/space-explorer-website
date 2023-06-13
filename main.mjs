@@ -117,7 +117,7 @@ function dropObject(object) {
 		console.log(distance);
 		console.log(object.position);
 		if(distance > 0.1) {
-			object.position.y -= distance + 0.54;
+			object.position.y -= distance;
 		}
 		console.log(object.position);
 	}
@@ -238,7 +238,7 @@ loader.load( 'tower.gltf', function ( gltf ) {
 // Load artifact
 loader.load( 'artifact4.gltf', function ( gltf1 ) {
 	loader.load( 'artifact5.gltf', function ( gltf2 ) {
-		for( let i = 0; i < 5; i++ ) {
+		for( let i = 0; i < 10; i++ ) {
 			generateArtifacts( scene, gltf1.scene, gltf2.scene );
 		}
 		updateLoadingBar();
@@ -254,12 +254,12 @@ function generateArtifacts(scene,originalObject1, originalObject2) {
 	if( rnd < 0.5 ) {
 		object = originalObject2.clone();
 	}
-	object.position.set(Math.random() * 8, 0.005, Math.random() * 4);
+	object.position.set(Math.random() * 18 + 1, 5, Math.random() * 8 - 9);
 	object.scale.set(0.05, 0.05, 0.05);
 	artifactObjects.push(object);
 	artifactData.push({nearby: false});
 	scene.add( object );
-	//dropObject(object);
+	dropObject(object);
 }
 
 function updateStatus() {
