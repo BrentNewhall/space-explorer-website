@@ -145,6 +145,7 @@ function collectArtifact() {
 	}
 }
 
+
 function animate() {
 	gravity(camera);
 	updateCameraPosition( movementSpeed );
@@ -176,6 +177,7 @@ function addMapsToScene( tiles, worldMap, scene ) {
 		x = 0;
 		z -= 10;
 	}
+	updateLoadingBar();
 }
 function loadTiles(modelPaths, worldMap, scene) {
 	// Array to hold the loaded GLTF models
@@ -210,6 +212,7 @@ const texture = textureLoader.load( 'sky4.jpg', () => {
 	const rt = new THREE.WebGLCubeRenderTarget(texture.image.height);
 	rt.fromEquirectangularTexture(renderer, texture);
 	scene.background = rt.texture;
+	updateLoadingBar();
 });
 
 const loader = new GLTFLoader();
@@ -219,6 +222,7 @@ loader.load( 'tower.gltf', function ( gltf ) {
 	gltf.scene.position.set(5, 0, -5);
 	gltf.scene.scale.set(0.05, 0.05, 0.05);
 	scene.add( gltf.scene );
+	updateLoadingBar();
 }
 , undefined, function ( error ) {
 	console.error( error );
@@ -231,6 +235,7 @@ loader.load( 'artifact4.gltf', function ( gltf1 ) {
 		for( let i = 0; i < 5; i++ ) {
 			generateArtifacts( scene, gltf1.scene, gltf2.scene );
 		}
+		updateLoadingBar();
 	});
 }
 , undefined, function ( error ) {
@@ -261,6 +266,21 @@ function playSound(sound) {
 		element.play();
 	else
 		console.log( "Sound not found: " + sound );
+}
+
+function updateLoadingBar() {
+	if( typeof updateLoadingBar.steps === 'undefined' ) {
+		updateLoadingBar.steps = 0;
+	}
+	const totalSteps = 4;
+	updateLoadingBar.steps++;
+	if( updateLoadingBar.steps >= totalSteps ) {
+		document.getElementById("loading").style.display = "none";
+	}
+	else {
+		const width = Math.floor((updateLoadingBar.steps / totalSteps) * 100);
+		document.getElementById("progress").style.width = width + "%";
+	}
 }
 
 setup();
