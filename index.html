@@ -24,14 +24,17 @@
 </div>
 
 <div id="help">
-  <div class="key"><key>W</key> Move forward</div>
+  <div class="key"><key>W</key> Move forwards</div>
   <div class="key"><key>A</key> Move backwards</div>
   <div class="key"><key>S</key> Turn left</div>
   <div class="key"><key>D</key> Turn right</div>
   <div class="key"><key>C</key> Collect artifact</div>
 </div>
 
-<footer id="status">Artifacts: 0</footer>
+<footer>
+  <span class="footer-section" id="status">Artifacts: 0</span>
+  <span class="footer-section" id="help-prompt"><key>?</key> for help</span>
+</footer>
 <canvas id="canvas"></canvas>
 
 <audio style="display: none;" id="sfx-equip" preload src="item-equip-6904.mp3"></audio>
