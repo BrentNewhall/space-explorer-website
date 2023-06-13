@@ -181,7 +181,7 @@ function addMapsToScene( tiles, worldMap, scene ) {
 			x += 10;
 		}
 		x = 0;
-		z -= 10;
+		z += 10;
 	}
 	updateLoadingBar();
 }
@@ -254,7 +254,7 @@ function generateArtifacts(scene,originalObject1, originalObject2) {
 	if( rnd < 0.5 ) {
 		object = originalObject2.clone();
 	}
-	object.position.set(Math.random() * 18 + 1, 5, Math.random() * 8 - 9);
+	object.position.set(Math.random() * 14 - 4, 5, Math.random() * 14 - 4);
 	object.scale.set(0.05, 0.05, 0.05);
 	artifactObjects.push(object);
 	artifactData.push({nearby: false});
