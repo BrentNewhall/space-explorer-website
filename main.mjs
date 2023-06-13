@@ -16,6 +16,7 @@ scene.add( light );
 camera.position.y = 0.1;
 camera.position.z = 5;
 
+const numArtifacts = 10;
 let artifactObjects = [];
 let artifactData = [];
 let artifactsCollected = 0;
@@ -109,12 +110,9 @@ function dropObject(object) {
 	const intersects = raycaster.intersectObjects(scene.children);
 	if(intersects.length > 0) {
 		const distance = intersects[0].distance;
-		console.log(distance);
-		console.log(object.position);
 		if(distance > 0.1) {
 			object.position.y -= distance;
 		}
-		console.log(object.position);
 	}
 }	
 
@@ -141,7 +139,7 @@ function collectArtifact() {
 			artifactData.splice(index, 1);
 			artifactsCollected += 1;
 			playSound("equip");
-			updateStatus();
+			updateStatus(numArtifacts);
 		}
 	}
 }
@@ -229,9 +227,10 @@ loader.load( 'tower.gltf', function ( gltf ) {
 // Load artifact
 loader.load( 'artifact4.gltf', function ( gltf1 ) {
 	loader.load( 'artifact5.gltf', function ( gltf2 ) {
-		for( let i = 0; i < 10; i++ ) {
+		for( let i = 0; i < numArtifacts; i++ ) {
 			generateArtifacts( scene, gltf1.scene, gltf2.scene );
 		}
+		updateStatus(numArtifacts);
 		updateLoadingBar();
 	});
 }
@@ -253,8 +252,8 @@ function generateArtifacts(scene,originalObject1, originalObject2) {
 	dropObject(object);
 }
 
-function updateStatus() {
-	document.getElementById("status").innerHTML = "Artifacts: " + artifactsCollected;
+function updateStatus(numArtifacts) {
+	document.getElementById("status").innerHTML = `Artifacts: ${artifactsCollected}/${numArtifacts}`;
 }
 
 function playSound(sound) {
@@ -262,7 +261,7 @@ function playSound(sound) {
 	if( typeof element !== 'undefined'  &&  element !== null )
 		element.play();
 	else
-		console.log( "Sound not found: " + sound );
+		console.error( "Sound not found: " + sound );
 }
 
 function updateLoadingBar() {

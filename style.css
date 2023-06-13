@@ -31,17 +31,8 @@ footer {
     right: 0px;
 }
 #loading {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     z-index: 2;
     font-size: 200%;
-    border: 1px solid black;
-    border-radius: 0.25em;
-    padding: 0.5em;
-    color: black;
-    background-color: rgba(255, 255, 255, 0.8);
 }
 .progress-bar {
     width: 100%;
@@ -56,17 +47,21 @@ footer {
     width: 0%; /* Adjust this value to represent the progress percentage */
     background-color: #4287f5;
 }
-#help {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 2;
+.panel {
     border: 1px solid black;
     border-radius: 0.25em;
     padding: 0.5em;
     color: black;
     background-color: rgba(255, 255, 255, 0.8);
+}
+.centered-panel {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+#help {
+    z-index: 2;
     display: none;
 }
 key {
