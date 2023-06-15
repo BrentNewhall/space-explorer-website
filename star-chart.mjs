@@ -15,7 +15,7 @@ document.getElementById('canvas').appendChild(renderer.domElement);
 
 function createStar(scene) {
     // Create a sphere geometry
-    const sphereGeometry = new THREE.SphereGeometry(1, 32, 32);
+    const sphereGeometry = new THREE.SphereGeometry(0.1, 32, 32);
 
     // Create a material for the core
     const sphereCoreMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
