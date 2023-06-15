@@ -10,10 +10,9 @@ camera.position.z = 50;
 // Create a renderer
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
-//document.body.appendChild(renderer.domElement);
 document.getElementById('canvas').appendChild(renderer.domElement);
 
-function createStar(scene) {
+function createStar(scene, x, y, z) {
     // Create a sphere geometry
     const sphereGeometry = new THREE.SphereGeometry(0.1, 32, 32);
 
@@ -35,56 +34,69 @@ function createStar(scene) {
     starCore.add(starGlow);
 
     // Position the sphere in front of the camera
-    const distance = 50; // Distance of the sphere from the camera
-    starCore.position.set(Math.floor(Math.random() * distance) - (distance / 2), Math.floor(Math.random() * distance) - (distance / 2), Math.floor(Math.random() * distance) - (distance / 2));
+    starCore.position.set(x, y, z);
     scene.add(starCore); // Add the sphere as a child of the camera
+}
+
+function createLine(scene, currPosition, prevPosition) {
+    const startPoint = new THREE.Vector3(currPosition[0], currPosition[1], currPosition[2]);
+    const endPoint = new THREE.Vector3(prevPosition[0], prevPosition[1], prevPosition[2]);
+    const lineGeometry = new THREE.BufferGeometry().setFromPoints([startPoint, endPoint]);
+    const lineMaterial = new THREE.LineBasicMaterial({ color: 0x888888 });
+    const line = new THREE.Line(lineGeometry, lineMaterial);
+    scene.add(line);
 }
 
 // Add the camera to the scene
 scene.add(camera);
 
-for (let i = 0; i < 50; i++) {
-    createStar(scene);
+const distance = 50; // Max distance of stars from galactic center
+const starPositions = [
+    [0, 0, 6],
+    [5, 0, 0],
+    [0, 4, 0],
+];
+for (let i = 0; i < 3; i++) {
+    createStar(scene, starPositions[i][0], starPositions[i][1], starPositions[i][2]);
+    if( i > 0 ) {
+        createLine(scene, starPositions[i], starPositions[i-1]);
+    }
 }
 
 // Animation loop
 function animate() {
-  requestAnimationFrame(animate);
-  
-  // Update any animations or movements here
-
-  renderer.render(scene, camera);
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
 }
 
 let isDragging = false;
 let previousMouseX = 0;
 
 document.addEventListener('mousedown', (event) => {
-  isDragging = true;
-  previousMouseX = event.clientX;
+    isDragging = true;
+    previousMouseX = event.clientX;
 });
 
 document.addEventListener('mousemove', (event) => {
-  if (isDragging) {
-    const delta = event.clientX - previousMouseX;
-    rotateScene(delta);
-    previousMouseX = event.clientX;
-  }
+    if (isDragging) {
+        const delta = event.clientX - previousMouseX;
+        rotateScene(delta);
+        previousMouseX = event.clientX;
+    }
 });
 
 document.addEventListener('mouseup', () => {
-  isDragging = false;
+    isDragging = false;
 });
 
 function rotateScene(delta) {
-    console.log("Delta:" + delta);
-  // Adjust the rotation speed according to your preference
-  const rotationSpeed = 0.01;
-  
-  // Rotate the camera around the Y-axis based on the mouse movement
-  camera.position.x = camera.position.x * Math.cos(delta * rotationSpeed) - camera.position.z * Math.sin(delta * rotationSpeed);
-  camera.position.z = camera.position.z * Math.cos(delta * rotationSpeed) + camera.position.x * Math.sin(delta * rotationSpeed);
-  camera.lookAt(scene.position);
+    // Adjust the rotation speed according to your preference
+    const rotationSpeed = 0.01;
+    
+    // Rotate the camera around the Y-axis based on the mouse movement
+    camera.position.x = camera.position.x * Math.cos(delta * rotationSpeed) - camera.position.z * Math.sin(delta * rotationSpeed);
+    camera.position.z = camera.position.z * Math.cos(delta * rotationSpeed) + camera.position.x * Math.sin(delta * rotationSpeed);
+    camera.lookAt(scene.position);
 }
 
 animate();
