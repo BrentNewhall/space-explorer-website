@@ -181,4 +181,17 @@ function rotateScene(delta) {
     camera.lookAt(scene.position);
 }
 
+function onScroll(event) {
+    const delta = event.deltaY;
+    const speed = 0.02;
+    const distanceToOrigin = camera.position.distanceTo( new THREE.Vector3(0, 0, 0) );
+    const newDistanceToOrigin = distanceToOrigin + (delta * speed);
+    if( newDistanceToOrigin >= 10  &&  newDistanceToOrigin <= 75 ) {
+        camera.position.setLength(newDistanceToOrigin);
+        camera.lookAt( 0, 0, 0 );
+    }
+}
+
+document.addEventListener('wheel', onScroll, false);
+
 animate();
