@@ -13,25 +13,14 @@
           }
         }
       </script>
+      <link href="style.css" rel="stylesheet" />
       <style>
-        body {
-          margin: 0;
-          padding: 0;
-          font-family: sans-serif;
-        }
-        #canvas {
-          background-color: black;
-          position: fixed;
-          left: 0px;
-          top: 0px;
-        }
         #status {
           font-family: sans-serif;
           position: fixed;
           left: 0.5em;
           top: 0.5em;
           padding: 0.25em;
-          color: white;
           background-color: rgba(128, 128, 128, 0.5);
           z-index: 1;
         }
@@ -42,49 +31,54 @@
           font-weight: bold;
           color: #ffee66;
         }
+        h2 {
+          margin: 0px;
+        }
         #constellations {
           position: fixed;
           left: 0px;
           top: 0px;
           z-index: 1;
-          color: white;
         }
         #details {
           z-index: 2;
-          color: white;
           position: fixed;
           left: 0px;
           bottom: 0px;
+        }
+        .clickable {
+          cursor: pointer;
         }
       </style>
 </head>
 <body>
 
 <div id="canvas"></div>
-<div id="constellations">
+<div id="constellations" class="panel">
   <div id="andromeda">
     Andromeda
-    <span id="andromeda-a">A</span>
-    <span id="andromeda-b">B</span>
-    <span id="andromeda-c">C</span>
-    <span id="andromeda-d">D</span>
+    <span id="andromeda-a" class="clickable" onclick="window.makeStarActive(0)">A</span>
+    <span id="andromeda-b" class="clickable" onclick="window.makeStarActive(1)">B</span>
+    <span id="andromeda-c" class="clickable" onclick="window.makeStarActive(2)">C</span>
+    <span id="andromeda-d" class="clickable" onclick="window.makeStarActive(3)">D</span>
   </div>
   <div id="betelgeuse">
     Betelgeuse
-    <span id="betelgeuse-a">A</span>
-    <span id="betelgeuse-b">B</span>
-    <span id="betelgeuse-c">C</span>
+    <span id="betelgeuse-a" class="clickable" onclick="window.makeStarActive(4)">A</span>
+    <span id="betelgeuse-b" class="clickable" onclick="window.makeStarActive(5)">B</span>
+    <span id="betelgeuse-c" class="clickable" onclick="window.makeStarActive(6)">C</span>
   </div>
   <div id="rigel">
     Rigel
-    <span id="rigel-a">A</span>
-    <span id="rigel-b">B</span>
-    <span id="rigel-c">C</span>
-    <span id="rigel-d">D</span>
+    <span id="rigel-a" class="clickable" onclick="window.makeStarActive(7)">A</span>
+    <span id="rigel-b" class="clickable" onclick="window.makeStarActive(8)">B</span>
+    <span id="rigel-c" class="clickable" onclick="window.makeStarActive(9)">C</span>
+    <span id="rigel-d" class="clickable" onclick="window.makeStarActive(10)">D</span>
   </div>
 </div>
-<div id="details"></div>
+<div id="details" class="panel"></div>
 
 <script type="module" src="/star-chart.mjs"></script>
+
 </body>
 </html>
