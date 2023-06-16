@@ -57,7 +57,8 @@ const allStars = [
     {
         "constellation": "Andromeda",
         "name": "A",
-        "position": [0,0,1]
+        "position": [0,0,1],
+        "resources": ["Artifacts"]
     },
     {
         "constellation": "Andromeda",
@@ -216,18 +217,23 @@ function changeStarDetails(star, active) {
 let currStar = -1;
 document.addEventListener('keyup', (event) => {
     if (event.key === ' ') {
-        let star = null;
-        if( currStar >= 0 ) {
-            star = allStars[currStar]["object"];
-            changeStar( star, 0xffffff, 0.2);
-            changeStarDetails(allStars[currStar], "inactive");
-        }
-        currStar = (currStar + 1) % 11;
-        star = allStars[currStar]["object"];
-        changeStar( star, 0xffee66, 0.5);
-        changeStarDetails(allStars[currStar], "active");
+        makeStarActive( (currStar + 1) % 11 );
     }
 });
+
+function makeStarActive(newStarIndex) {
+    let star = null;
+    if( currStar >= 0 ) {
+        star = allStars[currStar]["object"];
+        changeStar( star, 0xffffff, 0.2);
+        changeStarDetails(allStars[currStar], "inactive");
+    }
+    currStar = newStarIndex;
+    star = allStars[currStar]["object"];
+    changeStar( star, 0xffee66, 0.5);
+    changeStarDetails(allStars[currStar], "active");
+}
+window.makeStarActive = makeStarActive;
 
 document.addEventListener('mousedown', (event) => {
     isDragging = true;
