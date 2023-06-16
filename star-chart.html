@@ -17,6 +17,7 @@
         body {
           margin: 0;
           padding: 0;
+          font-family: sans-serif;
         }
         #canvas {
           background-color: black;
@@ -34,11 +35,55 @@
           background-color: rgba(128, 128, 128, 0.5);
           z-index: 1;
         }
+        div.active {
+          font-weight: bold;
+        }
+        span.active {
+          font-weight: bold;
+          color: #ffee66;
+        }
+        #constellations {
+          position: fixed;
+          left: 0px;
+          top: 0px;
+          z-index: 1;
+          color: white;
+        }
+        #details {
+          z-index: 2;
+          color: white;
+          position: fixed;
+          left: 0px;
+          bottom: 0px;
+        }
       </style>
 </head>
 <body>
 
-    <div id="canvas"></div>
+<div id="canvas"></div>
+<div id="constellations">
+  <div id="andromeda">
+    Andromeda
+    <span id="andromeda-a">A</span>
+    <span id="andromeda-b">B</span>
+    <span id="andromeda-c">C</span>
+    <span id="andromeda-d">D</span>
+  </div>
+  <div id="rigel">
+    Rigel
+    <span id="rigel-a">A</span>
+    <span id="rigel-b">B</span>
+    <span id="rigel-c">C</span>
+    <span id="rigel-d">D</span>
+  </div>
+  <div id="betelgeuse">
+    Betelgeuse
+    <span id="betelgeuse-a">A</span>
+    <span id="betelgeuse-b">B</span>
+    <span id="betelgeuse-c">C</span>
+  </div>
+</div>
+<div id="details"></div>
 
 <script type="module" src="/star-chart.mjs"></script>
 </body>
