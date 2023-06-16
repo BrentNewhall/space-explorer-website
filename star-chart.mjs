@@ -44,7 +44,7 @@ function createLine(scene, currPosition, prevPosition) {
     const startPoint = new THREE.Vector3(currPosition[0], currPosition[1], currPosition[2]);
     const endPoint = new THREE.Vector3(prevPosition[0], prevPosition[1], prevPosition[2]);
     const lineGeometry = new THREE.BufferGeometry().setFromPoints([startPoint, endPoint]);
-    const lineMaterial = new THREE.LineBasicMaterial({ color: 0x888888 });
+    const lineMaterial = new THREE.LineBasicMaterial({ color: 0x8888ff });
     const line = new THREE.Line(lineGeometry, lineMaterial);
     scene.add(line);
 }
@@ -76,6 +76,21 @@ const allStars = [
         "position": [15,10,3]
     },
     {
+        "constellation": "Betelgeuse",
+        "name": "A",
+        "position": [6.2, 7.2, 2.95]
+    },
+    {
+        "constellation": "Betelgeuse",
+        "name": "B",
+        "position": [7.2, 12.2, 4.1]
+    },
+    {
+        "constellation": "Betelgeuse",
+        "name": "C",
+        "position": [10.38, 14.1, 12.95]
+    },
+    {
         "constellation": "Rigel",
         "name": "A",
         "position": [-1.2, 1.2, 2.2]
@@ -94,21 +109,6 @@ const allStars = [
         "constellation": "Rigel",
         "name": "D",
         "position": [-10.2, 18.5, 14.5]
-    },
-    {
-        "constellation": "Betelgeuse",
-        "name": "A",
-        "position": [6.2, 7.2, 2.95]
-    },
-    {
-        "constellation": "Betelgeuse",
-        "name": "B",
-        "position": [7.2, 12.2, 4.1]
-    },
-    {
-        "constellation": "Betelgeuse",
-        "name": "C",
-        "position": [10.38, 14.1, 12.95]
     },
     {
         "position": [23.33,-22.4,22.53]
