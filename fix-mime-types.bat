@@ -1,0 +1,1 @@
+aws s3 cp s3://space-explorer/ s3://space-explorer/ --exclude * --include *.mjs --no-guess-mime-type --content-type "application/javascript" --metadata-directive="REPLACE" --recursive
