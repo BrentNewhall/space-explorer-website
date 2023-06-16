@@ -206,6 +206,10 @@ function changeStarDetails(star, active) {
     document.getElementById("details").innerHTML = details;
     const btn = document.createElement("button");
     btn.innerText = "Explore";
+    btn.onclick = function() {
+        window.open("index.html?star=" + constellation + "-" + name, "_blank");
+    }
+    btn.classList.add("explore-btn");
     document.getElementById("details").appendChild(btn);
 }
 
