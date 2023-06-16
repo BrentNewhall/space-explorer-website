@@ -158,8 +158,8 @@ function animate() {
 
 // Load map
 let worldMap = [
-	[0, 0],
-	[1, 0]
+	[1, 1],
+	[2, 1]
 ];
 
 function addMapsToScene( tiles, worldMap, scene ) {
@@ -167,7 +167,8 @@ function addMapsToScene( tiles, worldMap, scene ) {
 	let z = 0;
 	for( let row of worldMap ) {
 		for( let cell of row ) {
-			const tile = tiles[cell].clone();
+			let tile = tiles.filter( (obj) => { return obj.id === cell } );
+			tile = tile[0].object.clone();
 			tile.position.set( x, 0, z );
 			scene.add( tile );
 			x += 10;
@@ -177,16 +178,22 @@ function addMapsToScene( tiles, worldMap, scene ) {
 	}
 	updateLoadingBar();
 }
+
 function loadTiles(modelPaths, worldMap, scene) {
 	// Array to hold the loaded GLTF models
-	const loadedModels = [];
+	const tileModels = [];
 
 	// Create an array of promises for loading the models
 	const loadPromises = modelPaths.map( (modelPath) => {
 		return new Promise( (resolve, reject) => {
 			const loader = new GLTFLoader();
 			loader.load( modelPath, (gltf) => {
-				loadedModels.push( gltf.scene ); // Store the loaded model
+				let modelId = modelPath.split('.')[0];
+				modelId = Number(modelId.replace('map', ''));
+				tileModels.push( {
+					id: modelId,
+					object: gltf.scene
+				})
 				resolve(); // Resolve the promise once the model is loaded
 			}, undefined, reject);
 		});
@@ -195,7 +202,7 @@ function loadTiles(modelPaths, worldMap, scene) {
 	// Wait for all promises to resolve
 	Promise.all( loadPromises )
 	.then(() => {
-		addMapsToScene( loadedModels, worldMap, scene );
+		addMapsToScene( tileModels, worldMap, scene );
 		loadArtifacts();
 	})
 	.catch((error) => {
