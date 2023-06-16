@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Star Chart</title>
+    <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+    <script type="importmap">
+        {
+          "imports": {
+            "three": "https://unpkg.com/three@0.153.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.153.0/examples/jsm/"
+          }
+        }
+      </script>
+      <style>
+        body {
+          margin: 0;
+          padding: 0;
+          font-family: sans-serif;
+        }
+        #canvas {
+          background-color: black;
+          position: fixed;
+          left: 0px;
+          top: 0px;
+        }
+        #status {
+          font-family: sans-serif;
+          position: fixed;
+          left: 0.5em;
+          top: 0.5em;
+          padding: 0.25em;
+          color: white;
+          background-color: rgba(128, 128, 128, 0.5);
+          z-index: 1;
+        }
+        div.active {
+          font-weight: bold;
+        }
+        span.active {
+          font-weight: bold;
+          color: #ffee66;
+        }
+        #constellations {
+          position: fixed;
+          left: 0px;
+          top: 0px;
+          z-index: 1;
+          color: white;
+        }
+        #details {
+          z-index: 2;
+          color: white;
+          position: fixed;
+          left: 0px;
+          bottom: 0px;
+        }
+      </style>
+</head>
+<body>
+
+<div id="canvas"></div>
+<div id="constellations">
+  <div id="andromeda">
+    Andromeda
+    <span id="andromeda-a">A</span>
+    <span id="andromeda-b">B</span>
+    <span id="andromeda-c">C</span>
+    <span id="andromeda-d">D</span>
+  </div>
+  <div id="betelgeuse">
+    Betelgeuse
+    <span id="betelgeuse-a">A</span>
+    <span id="betelgeuse-b">B</span>
+    <span id="betelgeuse-c">C</span>
+  </div>
+  <div id="rigel">
+    Rigel
+    <span id="rigel-a">A</span>
+    <span id="rigel-b">B</span>
+    <span id="rigel-c">C</span>
+    <span id="rigel-d">D</span>
+  </div>
+</div>
+<div id="details"></div>
+
+<script type="module" src="/star-chart.mjs"></script>
+</body>
+</html>
