@@ -159,7 +159,7 @@ function animate() {
 // Load map
 let worldMap = [
 	[0, 0],
-	[0, 0]
+	[1, 0]
 ];
 
 function addMapsToScene( tiles, worldMap, scene ) {
@@ -196,13 +196,14 @@ function loadTiles(modelPaths, worldMap, scene) {
 	Promise.all( loadPromises )
 	.then(() => {
 		addMapsToScene( loadedModels, worldMap, scene );
+		loadArtifacts();
 	})
 	.catch((error) => {
 		// Error occurred during loading
 		console.error( 'Error loading models:', error );
 	});
 }
-const tiles = loadTiles( ['map1.gltf'], worldMap, scene );
+const tiles = loadTiles( ['map1.gltf','map2.gltf'], worldMap, scene );
 
 // Load sky
 const textureLoader = new THREE.TextureLoader();
@@ -228,18 +229,20 @@ loader.load( 'tower.gltf', function ( gltf ) {
 
 
 // Load artifacts
-loader.load( 'artifact4.gltf', function ( gltf1 ) {
-	loader.load( 'artifact5.gltf', function ( gltf2 ) {
-		for( let i = 0; i < numArtifacts; i++ ) {
-			generateArtifacts( scene, gltf1.scene, gltf2.scene );
-		}
-		updateStatus(numArtifacts);
-		updateLoadingBar();
+function loadArtifacts() {
+	loader.load( 'artifact4.gltf', function ( gltf1 ) {
+		loader.load( 'artifact5.gltf', function ( gltf2 ) {
+			for( let i = 0; i < numArtifacts; i++ ) {
+				generateArtifacts( scene, gltf1.scene, gltf2.scene );
+			}
+			updateStatus(numArtifacts);
+			updateLoadingBar();
+		});
+	}
+	, undefined, function ( error ) {
+		console.error( error );
 	});
 }
-, undefined, function ( error ) {
-	console.error( error );
-});
 
 function generateArtifacts( scene, originalObject1, originalObject2 ) {
 	const rnd = Math.random();
