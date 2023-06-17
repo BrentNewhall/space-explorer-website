@@ -34,11 +34,18 @@ const keys = {
 	KeyC: false,
 }
 
+const jumpingInitial = 0.2;
+const jumpingGravity = 0.1;
+let jumping = 0;
+
 function setup() {
 	// Add keyboard controls
 	window.addEventListener('keydown', (e) => {
 		if( e.code in keys ) {
 			keys[e.code] = true;
+		}
+		if( e.code === 'Space' ) {
+			jumping = jumpingInitial;
 		}
 		if( e.code === 'Slash' ) {
 			document.getElementById("help").style.display = 'block';
@@ -87,6 +94,13 @@ function updateCameraPosition( movementSpeed ) {
 	}
 	if( keys.KeyC ) {
 		collectArtifact();
+	}
+	if( jumping > 0 ) {
+		camera.position.y += jumping;
+		jumping -= jumping * jumpingGravity;
+		if( jumping < 0 ) {
+			jumping = 0;
+		}
 	}
 }
 
