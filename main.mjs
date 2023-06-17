@@ -34,11 +34,18 @@ const keys = {
 	KeyC: false,
 }
 
+const jumpingInitial = 0.2;
+const jumpingGravity = 0.1;
+let jumping = 0;
+
 function setup() {
 	// Add keyboard controls
 	window.addEventListener('keydown', (e) => {
 		if( e.code in keys ) {
 			keys[e.code] = true;
+		}
+		if( e.code === 'Space' ) {
+			jumping = jumpingInitial;
 		}
 		if( e.code === 'Slash' ) {
 			document.getElementById("help").style.display = 'block';
@@ -88,6 +95,13 @@ function updateCameraPosition( movementSpeed ) {
 	if( keys.KeyC ) {
 		collectArtifact();
 	}
+	if( jumping > 0 ) {
+		camera.position.y += jumping;
+		jumping -= jumping * jumpingGravity;
+		if( jumping < 0 ) {
+			jumping = 0;
+		}
+	}
 }
 
 function gravity(camera) {
@@ -115,6 +129,12 @@ function dropObject(object) {
 		const distance = intersects[0].distance;
 		if( distance > 0.1 ) {
 			object.position.y -= distance;
+			// Rotate the object to face the ground
+			/* const faceNormal = intersects[0].face.normal;
+			console.log(faceNormal);
+			const rotation = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, 1), faceNormal);
+			object.quaternion.copy(rotation); */
+			//object.lookAt(rotation);
 		}
 	}
 }	
@@ -207,7 +227,7 @@ function loadTiles(modelPaths, worldMap, scene) {
 	})
 	.catch((error) => {
 		// Error occurred during loading
-		console.error( 'Error loading models:', error );
+		console.error( 'Error loading map models:', error );
 	});
 }
 const tiles = loadTiles( ['map1.gltf','map2.gltf'], worldMap, scene );
@@ -234,35 +254,48 @@ loader.load( 'tower.gltf', function ( gltf ) {
 	console.error( error );
 });
 
-
-// Load artifacts
 function loadArtifacts() {
-	loader.load( 'artifact4.gltf', function ( gltf1 ) {
-		loader.load( 'artifact5.gltf', function ( gltf2 ) {
-			for( let i = 0; i < numArtifacts; i++ ) {
-				generateArtifacts( scene, gltf1.scene, gltf2.scene );
-			}
-			updateStatus(numArtifacts);
-			updateLoadingBar();
+	const modelPaths = ['artifact4.gltf', 'artifact5.gltf', 'artifact6.gltf'];
+	let artifactModels = [];
+	const loadPromises = modelPaths.map( (modelPath) => {
+		return new Promise( (resolve, reject) => {
+			const loader = new GLTFLoader();
+			loader.load( modelPath, (gltf) => {
+				let modelId = modelPath.split('.')[0];
+				modelId = Number(modelId.replace('artifact', ''));
+				artifactModels.push( {
+					id: modelId,
+					object: gltf.scene
+				})
+				resolve(); // Resolve the promise once the model is loaded
+			}, undefined, reject);
 		});
-	}
-	, undefined, function ( error ) {
-		console.error( error );
+	});
+
+	// Wait for all promises to resolve
+	Promise.all( loadPromises )
+	.then(() => {
+		generateArtifacts( scene, artifactModels );
+		updateStatus(numArtifacts);
+		updateLoadingBar();
+	})
+	.catch((error) => {
+		// Error occurred during loading
+		console.error( 'Error loading artifact models:', error );
 	});
 }
 
-function generateArtifacts( scene, originalObject1, originalObject2 ) {
-	const rnd = Math.random();
-	let object = originalObject1.clone();
-	if( rnd < 0.5 ) {
-		object = originalObject2.clone();
+function generateArtifacts( scene, artifactModels ) {
+	for( let i = 0; i < 10; i++ ) {
+		const artifactModel = artifactModels[Math.floor(Math.random() * artifactModels.length)];
+		let object = artifactModel.object.clone();
+		object.position.set( Math.random() * 14 - 4, 5, Math.random() * 14 - 4 );
+		object.scale.set( 0.05, 0.05, 0.05 );
+		artifactObjects.push( object );
+		artifactData.push( { nearby: false } );
+		scene.add( object );
+		dropObject( object );	
 	}
-	object.position.set( Math.random() * 14 - 4, 5, Math.random() * 14 - 4 );
-	object.scale.set( 0.05, 0.05, 0.05 );
-	artifactObjects.push( object );
-	artifactData.push( { nearby: false } );
-	scene.add( object );
-	dropObject( object );
 }
 
 function updateStatus(numArtifacts) {
