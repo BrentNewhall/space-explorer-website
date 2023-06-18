@@ -299,7 +299,8 @@ function generateArtifacts( scene, artifactModels ) {
 }
 
 function updateStatus(numArtifacts) {
-	document.getElementById("status").innerHTML = `Artifacts: ${artifactsCollected}/${numArtifacts}`;
+	const percent = Math.floor((artifactsCollected / numArtifacts) * 100);
+	document.getElementsByClassName("progress-collected")[0].style.width = percent + "%";
 }
 
 function playSound(sound) {

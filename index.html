@@ -18,6 +18,15 @@
 </head>
 <body>
 
+<header class="panel">
+  <div class="progress-bars">
+    <span class="label">Collected:&nbsp;</span> <span class="progress-bar"><span class="progress progress-collected"></span></span>
+    <span class="label">Oxygen:&nbsp;</span> <span class="progress-bar"><span class="progress progress-oxygen" style="width: 100%"></span></span>
+    <span class="label">Jump jets:&nbsp;</span> <span class="progress-bar"><span class="progress progress-jump-jets" style="width: 100%"></span></span>
+  </div>
+  <key>?</key> for help
+</header>
+
 <div id="loading" class="panel centered-panel">
   Loading...
   <div class="progress-bar"><div id="progress"></div></div>
@@ -32,10 +41,6 @@
   <div class="key"><key>C</key> Collect artifact</div>
 </div>
 
-<footer>
-  <span class="footer-section" id="status">Artifacts: 0</span>
-  <span class="footer-section" id="help-prompt"><key>?</key> for help</span>
-</footer>
 <canvas id="canvas"></canvas>
 
 <audio style="display: none;" id="sfx-equip" preload src="item-equip-6904.mp3"></audio>
