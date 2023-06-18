@@ -45,7 +45,11 @@ function setup() {
 			keys[e.code] = true;
 		}
 		if( e.code === 'Space' ) {
-			jumping = jumpingInitial;
+			if( jets - jumpJets >= 0 ) {
+				jets -= jumpJets;
+				updateJetsBar();
+				jumping = jumpingInitial;
+			}
 		}
 		if( e.code === 'Slash' ) {
 			document.getElementById("help").style.display = 'block';
@@ -302,6 +306,42 @@ function updateStatus(numArtifacts) {
 	const percent = Math.floor((artifactsCollected / numArtifacts) * 100);
 	document.getElementsByClassName("progress-collected")[0].style.width = percent + "%";
 }
+
+const maxJets = 1000;
+const jumpJets = 200;
+let jets = 1000;
+
+function updateJetsBar() {
+	const percent = Math.floor((jets / maxJets) * 100);
+	const progressBar = document.querySelector('.progress-jets');
+	progressBar.style.width = percent + '%';
+}
+
+const maxTime = 10 * 60;
+let oxygen = maxTime;
+
+// Function to update the progress bar
+function updateOxygenBar(progress) {
+	const progressBar = document.querySelector('.progress-oxygen');
+	progressBar.style.width = progress + '%';
+}
+  
+// Function to start the countdown
+function startOxygenCountdown() {  
+	// Update the progress bar every second
+	const countdownInterval = setInterval(() => {
+		oxygen--;
+		const progress = (oxygen / maxTime) * 100; // Calculate the progress percentage
+		updateOxygenBar(progress);
+	
+		if (oxygen <= 0) {
+			clearInterval(countdownInterval);
+		}
+	}, 1000);
+}
+  
+// Call the startCountdown function to initiate the countdown
+startOxygenCountdown();
 
 function playSound(sound) {
 	const element = document.getElementById('sfx-' + sound);
