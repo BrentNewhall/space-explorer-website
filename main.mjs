@@ -32,6 +32,7 @@ const keys = {
 	KeyA: false,
 	KeyD: false,
 	KeyC: false,
+	ShiftLeft: false
 }
 
 const jumpingInitial = 0.2;
@@ -66,6 +67,14 @@ function setup() {
 }
 
 function updateCameraPosition( movementSpeed ) {
+	let speed = movementSpeed;
+	if( keys.ShiftLeft ) {
+		if( jets + 1 > 0 ) {
+			speed = speed * 2.5;
+			jets -= 1;
+			updateJetsBar();
+		}
+	}
 	if( keys.KeyW ) {
 		// Get the direction vector of the camera
 		const direction = camera.getWorldDirection(new THREE.Vector3());
@@ -75,7 +84,7 @@ function updateCameraPosition( movementSpeed ) {
 		const intersects = raycaster.intersectObjects( scene.children );
 		if( intersects.length === 0  ||  intersects[0].distance > 0.15 ) {
 			// Scale the direction vector by the movement speed and add it to the camera's position
-			camera.position.add( direction.multiplyScalar( movementSpeed ) );
+			camera.position.add( direction.multiplyScalar( speed ) );
 		}
 	}
 	if( keys.KeyS ) {
@@ -87,14 +96,14 @@ function updateCameraPosition( movementSpeed ) {
 		const intersects = raycaster.intersectObjects( scene.children );
 		if( intersects.length === 0  ||  intersects[0].distance > 0.15 ) {
 			// Scale the direction vector by the movement speed and add it to the camera's position
-			camera.position.add(direction.multiplyScalar(movementSpeed));
+			camera.position.add(direction.multiplyScalar( speed ));
 		}
 	}
 	if( keys.KeyA ) {
-		camera.rotation.y += movementSpeed * 2;
+		camera.rotation.y += speed * 2;
 	}
 	if( keys.KeyD ) {
-		camera.rotation.y -= movementSpeed * 2;
+		camera.rotation.y -= speed * 2;
 	}
 	if( keys.KeyC ) {
 		collectArtifact();
