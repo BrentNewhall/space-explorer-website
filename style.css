@@ -10,7 +10,7 @@ body {
     top: 0px;
 }
 #loading {
-    z-index: 2;
+    z-index: 101;
     font-size: 200%;
 }
 .progress-bar {
@@ -53,6 +53,15 @@ key {
     color: #333;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
     margin-right: 0.5em;
+}
+#loading-dark-panel {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    background-color: rgba(0,0,0,0.8);
+    z-index: 100;
 }
 header {
     z-index: 5;

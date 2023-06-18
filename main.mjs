@@ -368,6 +368,7 @@ function updateLoadingBar() {
 	updateLoadingBar.steps++;
 	if( updateLoadingBar.steps >= totalSteps ) {
 		document.getElementById("loading").style.display = "none";
+		document.getElementById("loading-dark-panel").style.display = "none";
 	}
 	else {
 		const width = Math.floor((updateLoadingBar.steps / totalSteps) * 100);
