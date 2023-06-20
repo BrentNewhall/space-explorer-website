@@ -32,12 +32,26 @@ const keys = {
 	KeyA: false,
 	KeyD: false,
 	KeyC: false,
-	ShiftLeft: false
+	ShiftLeft: false,
+	ArrowLeft: false,
+	ArrowRight: false,
+	ArrowUp: false,
+	ArrowDown: false
 }
 
 const jumpingInitial = 0.2;
 const jumpingGravity = 0.1;
 let jumping = 0;
+
+function toggleHidden(id) {
+	let element = document.getElementById(id);
+	if( element.style.display === 'block' ) {
+		element.style.display = 'none';
+	}
+	else {
+		element.style.display = 'block';
+	}
+}
 
 function setup() {
 	// Add keyboard controls
@@ -53,15 +67,12 @@ function setup() {
 			}
 		}
 		if( e.code === 'Slash' ) {
-			document.getElementById("help").style.display = 'block';
+			toggleHidden("help");
 		}
 	});
 	window.addEventListener('keyup', (e) => {
 		if( e.code in keys ) {
 			keys[e.code] = false;
-		}
-		if( e.code === 'Slash' ) {
-			document.getElementById("help").style.display = 'none';
 		}
 	});
 }
@@ -75,7 +86,7 @@ function updateCameraPosition( movementSpeed ) {
 			updateJetsBar();
 		}
 	}
-	if( keys.KeyW ) {
+	if( keys.KeyW  ||  keys.ArrowUp ) {
 		// Get the direction vector of the camera
 		const direction = camera.getWorldDirection(new THREE.Vector3());
 		// Check for any objects in front of the camera
@@ -87,7 +98,7 @@ function updateCameraPosition( movementSpeed ) {
 			camera.position.add( direction.multiplyScalar( speed ) );
 		}
 	}
-	if( keys.KeyS ) {
+	if( keys.KeyS  ||  keys.ArrowDown ) {
 		// Get the direction vector of the camera
 		const direction = camera.getWorldDirection(new THREE.Vector3()).negate();
 		// Check for any objects in front of the camera
@@ -99,10 +110,10 @@ function updateCameraPosition( movementSpeed ) {
 			camera.position.add(direction.multiplyScalar( speed ));
 		}
 	}
-	if( keys.KeyA ) {
+	if( keys.KeyA  ||  keys.ArrowLeft ) {
 		camera.rotation.y += speed * 2;
 	}
-	if( keys.KeyD ) {
+	if( keys.KeyD  ||  keys.ArrowRight ) {
 		camera.rotation.y -= speed * 2;
 	}
 	if( keys.KeyC ) {
