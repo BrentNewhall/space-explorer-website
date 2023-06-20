@@ -32,7 +32,11 @@ const keys = {
 	KeyA: false,
 	KeyD: false,
 	KeyC: false,
-	ShiftLeft: false
+	ShiftLeft: false,
+	ArrowLeft: false,
+	ArrowRight: false,
+	ArrowUp: false,
+	ArrowDown: false
 }
 
 const jumpingInitial = 0.2;
@@ -75,7 +79,7 @@ function updateCameraPosition( movementSpeed ) {
 			updateJetsBar();
 		}
 	}
-	if( keys.KeyW ) {
+	if( keys.KeyW  ||  keys.ArrowUp ) {
 		// Get the direction vector of the camera
 		const direction = camera.getWorldDirection(new THREE.Vector3());
 		// Check for any objects in front of the camera
@@ -87,7 +91,7 @@ function updateCameraPosition( movementSpeed ) {
 			camera.position.add( direction.multiplyScalar( speed ) );
 		}
 	}
-	if( keys.KeyS ) {
+	if( keys.KeyS  ||  keys.ArrowDown ) {
 		// Get the direction vector of the camera
 		const direction = camera.getWorldDirection(new THREE.Vector3()).negate();
 		// Check for any objects in front of the camera
@@ -99,10 +103,10 @@ function updateCameraPosition( movementSpeed ) {
 			camera.position.add(direction.multiplyScalar( speed ));
 		}
 	}
-	if( keys.KeyA ) {
+	if( keys.KeyA  ||  keys.ArrowLeft ) {
 		camera.rotation.y += speed * 2;
 	}
-	if( keys.KeyD ) {
+	if( keys.KeyD  ||  keys.ArrowRight ) {
 		camera.rotation.y -= speed * 2;
 	}
 	if( keys.KeyC ) {
