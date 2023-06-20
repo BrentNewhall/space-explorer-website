@@ -43,6 +43,16 @@ const jumpingInitial = 0.2;
 const jumpingGravity = 0.1;
 let jumping = 0;
 
+function toggleHidden(id) {
+	let element = document.getElementById(id);
+	if( element.style.display === 'block' ) {
+		element.style.display = 'none';
+	}
+	else {
+		element.style.display = 'block';
+	}
+}
+
 function setup() {
 	// Add keyboard controls
 	window.addEventListener('keydown', (e) => {
@@ -57,15 +67,12 @@ function setup() {
 			}
 		}
 		if( e.code === 'Slash' ) {
-			document.getElementById("help").style.display = 'block';
+			toggleHidden("help");
 		}
 	});
 	window.addEventListener('keyup', (e) => {
 		if( e.code in keys ) {
 			keys[e.code] = false;
-		}
-		if( e.code === 'Slash' ) {
-			document.getElementById("help").style.display = 'none';
 		}
 	});
 }
