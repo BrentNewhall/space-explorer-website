@@ -24,59 +24,80 @@
           background-color: rgba(128, 128, 128, 0.5);
           z-index: 1;
         }
-        div.active {
+        .active {
           font-weight: bold;
-        }
-        span.active {
-          font-weight: bold;
-          color: #ffee66;
         }
         h2 {
-          margin: 0px;
+          margin-top: 5px;
         }
-        #constellations {
+        #starlanes {
           position: fixed;
           left: 0px;
           top: 0px;
           z-index: 1;
         }
-        #details {
-          z-index: 2;
-          position: fixed;
-          left: 0px;
-          bottom: 0px;
-        }
         .clickable {
           cursor: pointer;
         }
+        .starlane-name {
+          font-weight: bold;
+          cursor: pointer;
+        }
+        .starlane-details {
+          display: none;
+          margin-left: 1em;
+        }
       </style>
+      <script>
+        
+function showHideStarlane(name) {
+    const starlane = document.getElementById("starlane-" + name + "-details");
+    const bullet = document.getElementById(name + "-bullet");
+    if( starlane.style.display === "block" ) {
+        starlane.style.display = "none";
+        bullet.innerHTML = "&#9656";
+    }
+    else {
+        starlane.style.fontWeight = "normal";
+        starlane.style.display = "block";
+        bullet.innerHTML = "&#9662";
+    }
+}
+      </script>
 </head>
 <body>
 
 <div id="canvas"></div>
-<div id="constellations" class="panel">
-  <div id="andromeda">
-    Andromeda
-    <span id="andromeda-a" class="clickable" onclick="window.makeStarActive(0)">A</span>
-    <span id="andromeda-b" class="clickable" onclick="window.makeStarActive(1)">B</span>
-    <span id="andromeda-c" class="clickable" onclick="window.makeStarActive(2)">C</span>
-    <span id="andromeda-d" class="clickable" onclick="window.makeStarActive(3)">D</span>
+<div id="starlanes" class="panel">
+  <div id="alpha">
+    <div class="starlane-name" onclick="showHideStarlane('alpha')"><span id="alpha-bullet">&#9656;</span>Starlane Alpha</div>
+    <div id="starlane-alpha-details" class="starlane-details">
+      <span id="alpha-lyrion" class="clickable" onclick="window.makeStarActive(0)">Lyrion</span>
+      <span id="alpha-solara" class="clickable" onclick="window.makeStarActive(1)">Solara</span>
+      <span id="alpha-andromira" class="clickable" onclick="window.makeStarActive(2)">Andromira</span>
+      <span id="alpha-oranex" class="clickable" onclick="window.makeStarActive(3)">Oranex</span>
+    </div>
   </div>
-  <div id="betelgeuse">
-    Betelgeuse
-    <span id="betelgeuse-a" class="clickable" onclick="window.makeStarActive(4)">A</span>
-    <span id="betelgeuse-b" class="clickable" onclick="window.makeStarActive(5)">B</span>
-    <span id="betelgeuse-c" class="clickable" onclick="window.makeStarActive(6)">C</span>
+  <div id="beta">
+    <div class="starlane-name" onclick="showHideStarlane('beta')"><span id="beta-bullet">&#9656;</span>Starlane Beta</div>
+    <div id="starlane-beta-details" class="starlane-details">
+      <span id="beta-centoris" class="clickable" onclick="window.makeStarActive(4)">Centoris</span>
+      <span id="beta-dracosen" class="clickable" onclick="window.makeStarActive(5)">Dracosen</span>
+      <span id="beta-aurora" class="clickable" onclick="window.makeStarActive(6)">Aurora</span>
+    </div>
   </div>
-  <div id="rigel">
-    Rigel
-    <span id="rigel-a" class="clickable" onclick="window.makeStarActive(7)">A</span>
-    <span id="rigel-b" class="clickable" onclick="window.makeStarActive(8)">B</span>
-    <span id="rigel-c" class="clickable" onclick="window.makeStarActive(9)">C</span>
-    <span id="rigel-d" class="clickable" onclick="window.makeStarActive(10)">D</span>
+  <div id="gamma">
+    <div class="starlane-name" onclick="showHideStarlane('gamma')"><span id="alpha-bullet">&#9656;</span>Starlane Gamma</div>
+    <div id="starlane-gamma-details" class="starlane-details">
+      <span id="gamma-betelius" class="clickable" onclick="window.makeStarActive(7)">Betelius</span>
+      <span id="gamma-serpentus" class="clickable" onclick="window.makeStarActive(8)">Serpentus</span>
+      <span id="gamma-velerion" class="clickable" onclick="window.makeStarActive(9)">Velerion</span>
+      <span id="gamma-intaron" class="clickable" onclick="window.makeStarActive(10)">Intaron</span>
+    </div>
   </div>
+  <div id="details"></div>
 </div>
-<div id="details" class="panel"></div>
+<div id="ddetails" class="panel"></div>
 
 <script type="module" src="/star-chart.mjs"></script>
 

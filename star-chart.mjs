@@ -52,63 +52,63 @@ function createLine(scene, currPosition, prevPosition) {
 // Add the camera to the scene
 scene.add(camera);
 
-const distance = 50; // Max distance of stars from galactic center
+//const distance = 50; // Max distance of stars from galactic center
 const allStars = [
     {
-        "constellation": "Andromeda",
-        "name": "A",
+        "starlane": "Alpha",
+        "name": "Lyrion",
         "position": [0,0,1],
         "resources": ["Artifacts"]
     },
     {
-        "constellation": "Andromeda",
-        "name": "B",
+        "starlane": "Alpha",
+        "name": "Solara",
         "position": [3,4,0],
         "resources": ["Artifacts"]
     },
     {
-        "constellation": "Andromeda",
-        "name": "C",
+        "starlane": "Alpha",
+        "name": "Andromira",
         "position": [8,7,0]
     },
     {
-        "constellation": "Andromeda",
-        "name": "D",
+        "starlane": "Alpha",
+        "name": "Oranex",
         "position": [15,10,3]
     },
     {
-        "constellation": "Betelgeuse",
-        "name": "A",
+        "starlane": "Beta",
+        "name": "Centoris",
         "position": [6.2, 7.2, 2.95]
     },
     {
-        "constellation": "Betelgeuse",
-        "name": "B",
+        "starlane": "Beta",
+        "name": "Dracosen",
         "position": [7.2, 12.2, 4.1]
     },
     {
-        "constellation": "Betelgeuse",
-        "name": "C",
+        "starlane": "Beta",
+        "name": "Aurora",
         "position": [10.38, 14.1, 12.95]
     },
     {
-        "constellation": "Rigel",
-        "name": "A",
+        "starlane": "Gamma",
+        "name": "Betelius",
         "position": [-1.2, 1.2, 2.2]
     },
     {
-        "constellation": "Rigel",
-        "name": "B",
+        "starlane": "Gamma",
+        "name": "Serpentus",
         "position": [-2.5, 7.83, 8.31]
     },
     {
-        "constellation": "Rigel",
-        "name": "C",
+        "starlane": "Gamma",
+        "name": "Velerion",
         "position": [-8.73, 15.5, 9.98]
     },
     {
-        "constellation": "Rigel",
-        "name": "D",
+        "starlane": "Gamma",
+        "name": "Intaron",
         "position": [-10.2, 18.5, 14.5]
     },
     {
@@ -155,14 +155,14 @@ const allStars = [
 
 const stars = [];
 
-let currConstellation = null;
+let currStarlane = null;
 for( const [index,starData] of allStars.entries() ) {
-    if( "constellation" in starData ) {
-        if( currConstellation == starData["constellation"] ) {
+    if( "starlane" in starData ) {
+        if( currStarlane == starData["starlane"] ) {
             // Draw line
             createLine(scene, allStars[index].position, allStars[index-1].position);
         }
-        currConstellation = starData["constellation"];
+        currStarlane = starData["starlane"];
     }
     // Draw star
     createStar(scene, starData, starData.position[0], starData.position[1], starData.position[2]);
@@ -188,12 +188,12 @@ function changeStar(star,color,radius) {
 }
 
 function changeStarDetails(star, active) {
-    const constellation = star["constellation"].toLowerCase();
+    const starlane = star["starlane"].toLowerCase();
     const name = star["name"].toLowerCase();
-    const starID = constellation + "-" + name;
-    (active === "active") ? document.getElementById(constellation).classList.add("active") : document.getElementById(constellation).classList.remove("active"); 
+    const starID = starlane + "-" + name;
+    (active === "active") ? document.getElementById(starlane).classList.add("active") : document.getElementById(starlane).classList.remove("active"); 
     (active === "active") ? document.getElementById(starID).classList.add("active") : document.getElementById(starID).classList.remove("active");
-    let details = "<h2>" + star["constellation"] + " " + star["name"] + "</h2>";
+    let details = "<h2>" + star["name"] + "</h2>";
     if( "resources" in star ) {
         details += "<p><strong>Resources:</strong> ";
         for( const [index,resource] of star["resources"].entries() ) {
@@ -208,7 +208,7 @@ function changeStarDetails(star, active) {
     const btn = document.createElement("button");
     btn.innerText = "Explore";
     btn.onclick = function() {
-        window.open("index.html?star=" + constellation + "-" + name, "_blank");
+        window.open("index.html?star=" + starlane + "-" + name, "_blank");
     }
     btn.classList.add("explore-btn");
     document.getElementById("details").appendChild(btn);
