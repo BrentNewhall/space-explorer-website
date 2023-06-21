@@ -120,7 +120,12 @@ function setup() {
 	});
 	// Request pointer lock on canvas click
 	document.getElementById("canvas").addEventListener("click", () => {
-		document.getElementById("canvas").requestPointerLock();
+		if( mouseControls ) {
+			document.exitPointerLock();
+		}
+		else {
+			document.getElementById("canvas").requestPointerLock();
+		}
 	});
 	document.addEventListener("pointerlockchange", () => {
 		if( document.pointerLockElement === document.getElementById("canvas") ) {
