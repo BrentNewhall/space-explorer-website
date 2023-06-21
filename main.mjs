@@ -346,7 +346,7 @@ function updateJetsBar() {
 	progressBar.style.width = percent + '%';
 }
 
-const maxTime = 10// * 60;
+const maxTime = 10 * 60;
 let oxygen = maxTime;
 
 // Function to update the progress bar
