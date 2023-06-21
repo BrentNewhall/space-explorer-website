@@ -3,58 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space Explorer</title>
+    <title>Star Chart</title>
     <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
-    <link href="style.css" rel="stylesheet" />
-    <link rel="icon" type="image/png" href="favicon.png">
-<script type="importmap">
-  {
-    "imports": {
-      "three": "https://unpkg.com/three@0.153.0/build/three.module.js",
-      "three/addons/": "https://unpkg.com/three@0.153.0/examples/jsm/"
+    <script type="importmap">
+        {
+          "imports": {
+            "three": "https://unpkg.com/three@0.153.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.153.0/examples/jsm/"
+          }
+        }
+      </script>
+      <link href="style.css" rel="stylesheet" />
+      <link rel="icon" type="image/png" href="favicon.png">
+      <style>
+        #status {
+          font-family: sans-serif;
+          position: fixed;
+          left: 0.5em;
+          top: 0.5em;
+          padding: 0.25em;
+          background-color: rgba(128, 128, 128, 0.5);
+          z-index: 1;
+        }
+        .active {
+          font-weight: bold;
+        }
+        h2 {
+          margin-top: 5px;
+        }
+        #starlanes {
+          position: fixed;
+          left: 0px;
+          top: 0px;
+          z-index: 1;
+        }
+        .clickable {
+          cursor: pointer;
+        }
+        .starlane-name {
+          font-weight: bold;
+          cursor: pointer;
+        }
+        .starlane-details {
+          display: none;
+          margin-left: 1em;
+        }
+      </style>
+      <script>
+        
+function showHideStarlane(name) {
+    const starlane = document.getElementById("starlane-" + name + "-details");
+    const bullet = document.getElementById(name + "-bullet");
+    if( starlane.style.display === "block" ) {
+        starlane.style.display = "none";
+        bullet.innerHTML = "&#9656";
     }
-  }
-</script>
+    else {
+        starlane.style.fontWeight = "normal";
+        starlane.style.display = "block";
+        bullet.innerHTML = "&#9662";
+    }
+}
+      </script>
 </head>
 <body>
 
-<header class="panel">
-  <div class="progress-bars">
-    <span class="label">Collected:&nbsp;</span> <span class="progress-bar"><span class="progress progress-collected"></span></span>
-    <span class="label">Oxygen:&nbsp;</span> <span class="progress-bar"><span class="progress progress-oxygen" style="width: 100%"></span></span>
-    <span class="label">Jets:&nbsp;</span> <span class="progress-bar"><span class="progress progress-jets" style="width: 100%"></span></span>
+<div id="canvas"></div>
+<div id="starlanes" class="panel">
+  <div id="alpha">
+    <div class="starlane-name" onclick="showHideStarlane('alpha')"><span id="alpha-bullet">&#9656;</span>Starlane Alpha</div>
+    <div id="starlane-alpha-details" class="starlane-details">
+      <span id="alpha-lyrion" class="clickable" onclick="window.makeStarActive(0)">Lyrion</span>
+      <span id="alpha-solara" class="clickable" onclick="window.makeStarActive(1)">Solara</span><br />
+      <span id="alpha-andromira" class="clickable" onclick="window.makeStarActive(2)">Andromira</span>
+      <span id="alpha-oranex" class="clickable" onclick="window.makeStarActive(3)">Oranex</span>
+    </div>
   </div>
-  <key>?</key> for help
-</header>
-
-<div id="loading" class="panel centered-panel">
-  Loading...
-  <div class="progress-bar"><div id="progress"></div></div>
+  <div id="beta">
+    <div class="starlane-name" onclick="showHideStarlane('beta')"><span id="beta-bullet">&#9656;</span>Starlane Beta</div>
+    <div id="starlane-beta-details" class="starlane-details">
+      <span id="beta-centoris" class="clickable" onclick="window.makeStarActive(4)">Centoris</span>
+      <span id="beta-dracosen" class="clickable" onclick="window.makeStarActive(5)">Dracosen</span>
+      <span id="beta-aurora" class="clickable" onclick="window.makeStarActive(6)">Aurora</span>
+    </div>
+  </div>
+  <div id="gamma">
+    <div class="starlane-name" onclick="showHideStarlane('gamma')"><span id="gamma-bullet">&#9656;</span>Starlane Gamma</div>
+    <div id="starlane-gamma-details" class="starlane-details">
+      <span id="gamma-betelius" class="clickable" onclick="window.makeStarActive(7)">Betelius</span>
+      <span id="gamma-serpentus" class="clickable" onclick="window.makeStarActive(8)">Serpentus</span><br />
+      <span id="gamma-velerion" class="clickable" onclick="window.makeStarActive(9)">Velerion</span>
+      <span id="gamma-intaron" class="clickable" onclick="window.makeStarActive(10)">Intaron</span>
+    </div>
+  </div>
+  <div id="details"></div>
 </div>
-<div id="oxygen-depleted" class="panel centered-panel">
-  Oxygen depleted<br />
-  <key>Esc</key> to return to star chart
-</div>
-<div id="loading-dark-panel"></div>
+<div id="ddetails" class="panel"></div>
 
-<div id="help" class="panel centered-panel">
-  <div class="key"><key>&#8593;</key>/<key>W</key> Move forwards</div>
-  <div class="key"><key>&#8595;</key>/<key>A</key> Move backwards</div>
-  <div class="key"><key>&#8592;</key>/<key>S</key> Turn left</div>
-  <div class="key"><key>&#8594;</key>/<key>D</key> Turn right</div>
-  <div class="key"><key>Shift</key> Accelerate</div>
-  <div class="key"><key>Space</key> Jump</div>
-  <div class="key"><key>C</key> Collect artifact</div>
-  <div class="key"><key>Esc</key> Return to star chart</div>
-  Click on world to toggle mouse look
-</div>
+<script type="module" src="/star-chart.mjs"></script>
 
-<canvas id="canvas"></canvas>
-
-<audio style="display: none;" id="sfx-equip" preload src="item-equip-6904.mp3"></audio>
-<audio style="display: none;" id="sfx-success" preload src="success_bell-6776.mp3"></audio>
-<audio style="display: none;" id="sfx-thrusters" preload src="thrusters_loopwav-14699.mp3"></audio>
-
-<script type="module" src="/main.mjs"></script>
 </body>
 </html>
