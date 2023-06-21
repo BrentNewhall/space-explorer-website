@@ -22,6 +22,9 @@ let worldMap = [
 	[2, 1]
 ];
 
+let mouseControls = false;
+const sensitivity = 0.002;
+
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
@@ -39,6 +42,7 @@ scene.add( light );
 
 camera.position.y = 0.1;
 camera.position.z = 5;
+camera.rotation.order = "YXZ";
 
 let artifactObjects = [];
 let artifactData = [];
@@ -91,6 +95,25 @@ function setup() {
 			keys[e.code] = false;
 		}
 	});
+	// Add mouse controls
+	window.addEventListener('mousemove', (e) => {
+		if( mouseControls ) {
+			camera.rotation.y -= e.movementX * sensitivity;
+			camera.rotation.x -= e.movementY * sensitivity;
+		}
+	});
+	// Request pointer lock on canvas click
+	document.getElementById("canvas").addEventListener("click", () => {
+		document.getElementById("canvas").requestPointerLock();
+	});
+	document.addEventListener("pointerlockchange", () => {
+		if( document.pointerLockElement === document.getElementById("canvas") ) {
+			mouseControls = true;
+		}
+		else {
+			mouseControls = false;
+		}
+	}, false);
 }
 
 function updateCameraPosition( movementSpeed ) {
