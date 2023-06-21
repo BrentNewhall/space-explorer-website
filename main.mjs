@@ -26,7 +26,7 @@ let worldMap = [
 	[2, 1]
 ];
 if( getURLParameter("star") === "alpha-solara") {
-	worldMap = [[3, 3],[3, 3]];
+	worldMap = [[3, 3, 3], [3, 7, 3], [3, 3, 3]];
 }
 
 let mouseControls = false;
@@ -371,7 +371,7 @@ function loadTiles(modelPaths, worldMap, scene) {
 	});
 }
 if( getURLParameter("star") === "alpha-solara") {
-	const tiles = loadTiles( ['map4.gltf','map5.gltf','map6.gltf','map3.gltf'], worldMap, scene );
+	const tiles = loadTiles( ['map4.gltf','map5.gltf','map6.gltf','map3.gltf', 'map7.gltf'], worldMap, scene );
 }
 else {
 	const tiles = loadTiles( ['map4.gltf','map5.gltf','map6.gltf','map1.gltf','map2.gltf'], worldMap, scene );
@@ -449,7 +449,7 @@ function generateArtifacts( scene, artifactModels ) {
 	for( let i = 0; i < 10; i++ ) {
 		const artifactModel = artifactModels[Math.floor(Math.random() * artifactModels.length)];
 		let object = artifactModel.object.clone();
-		object.position.set( Math.random() * worldSize - 5, 5, Math.random() * worldSize - 5 );
+		object.position.set( Math.random() * worldSize - 5, 20, Math.random() * worldSize - 5 );
 		object.scale.set( 0.05, 0.05, 0.05 );
 		artifactObjects.push( object );
 		artifactData.push( { nearby: false } );
