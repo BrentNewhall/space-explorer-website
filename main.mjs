@@ -368,7 +368,7 @@ const loader = new GLTFLoader();
 
 // Load tower
 loader.load( 'tower.gltf', function ( gltf ) {
-	gltf.scene.position.set(5, 0, -5);
+	gltf.scene.position.set(5, 0, 0);
 	gltf.scene.scale.set(0.05, 0.05, 0.05);
 	scene.add( gltf.scene );
 	updateLoadingBar();
@@ -409,10 +409,11 @@ function loadArtifacts() {
 }
 
 function generateArtifacts( scene, artifactModels ) {
+	let worldSize = worldMap.length * 10;
 	for( let i = 0; i < 10; i++ ) {
 		const artifactModel = artifactModels[Math.floor(Math.random() * artifactModels.length)];
 		let object = artifactModel.object.clone();
-		object.position.set( Math.random() * 14 - 4, 5, Math.random() * 14 - 4 );
+		object.position.set( Math.random() * worldSize - 5, 5, Math.random() * worldSize - 5 );
 		object.scale.set( 0.05, 0.05, 0.05 );
 		artifactObjects.push( object );
 		artifactData.push( { nearby: false } );
