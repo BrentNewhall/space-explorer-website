@@ -1,6 +1,10 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
+/* import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'; */
+
 const maxTime = 10 * 60;
 let oxygen = maxTime;
 
@@ -34,11 +38,23 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.setSize( window.innerWidth, window.innerHeight );
 
+/* // Create an instance of EffectComposer and set the renderer
+const composer = new EffectComposer(renderer);
+composer.setSize(window.innerWidth, window.innerHeight);
+
+// Create a render pass
+const renderPass = new RenderPass(scene, camera);
+composer.addPass(renderPass);
+
+// Create an UnrealBloomPass and configure its parameters
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+composer.addPass(bloomPass); */
+
 // Add sun
 //const light = new THREE.DirectionalLight( 0xffffff, 1 );
-const light = new THREE.PointLight( 0xffffff, 1, 100 );
-light.position.set( 1, 1, 5 );
-scene.add( light );
+const sun = new THREE.PointLight( 0xffffff, 1, 125 );
+sun.position.set( 1, 25, 1 );
+scene.add( sun );
 
 camera.position.y = 0.1;
 camera.position.z = 5;
@@ -239,6 +255,7 @@ function animate() {
 	gravity(camera);
 	updateCameraPosition( movementSpeed );
 	requestAnimationFrame( animate );
+	//composer.render();
 	findNearbyArtifacts( artifactObjects, artifactData );
 	renderer.render( scene, camera );
 }
@@ -357,6 +374,39 @@ function generateArtifacts( scene, artifactModels ) {
 		scene.add( object );
 		dropObject( object );	
 	}
+}
+
+function generateGlowingCube() {
+	// Create a cube geometry
+	const geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+
+	// Create an inner material with emissive color
+	const innerMaterial = new THREE.MeshBasicMaterial({
+		color: 0x8888ff,
+		emissive: 0x8888ff,
+		side: THREE.BackSide, // Render only the back side of the cube
+  	});
+	// Create an outer material with a transparent material
+const outerMaterial = new THREE.MeshBasicMaterial({
+	color: 0xffffff,
+	transparent: true,
+	opacity: 0.5,
+  });
+// Create an inner cube mesh
+const innerCube = new THREE.Mesh(geometry, innerMaterial);
+
+// Create an outer cube mesh
+const outerCube = new THREE.Mesh(geometry, outerMaterial);
+
+// Add the inner and outer cubes to the scene
+scene.add(innerCube);
+scene.add(outerCube);
+  
+	const light = new THREE.PointLight( 0x8888ff, 1, 5, 2 );
+	light.intensity = 1;
+	innerCube.add( light );
+	innerCube.position.set(0, 0.2, 0);
+	innerCube.position.set(0, 0.2, 0);
 }
 
 function updateStatus(numArtifacts) {
