@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
+let returnToSpaceCountdown = 10;
+
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
@@ -68,6 +70,9 @@ function setup() {
 		}
 		if( e.code === 'Slash' ) {
 			toggleHidden("help");
+		}
+		if( e.code === 'Escape' ) {
+			returnToSpace();
 		}
 	});
 	window.addEventListener('keyup', (e) => {
@@ -359,12 +364,30 @@ function startOxygenCountdown() {
 	
 		if (oxygen <= 0) {
 			clearInterval(countdownInterval);
+			startReturnToSpace();
 		}
 	}, 1000);
 }
   
 // Call the startCountdown function to initiate the countdown
 startOxygenCountdown();
+
+function startReturnToSpace() {
+	document.getElementById("extracting").style.display = "block";
+	document.getElementById("loading-dark-panel").style.display = "block";
+	let countdownInterval = setInterval(function() {
+		returnToSpaceCountdown--;
+		document.getElementById("return-to-space-countdown").textContent = returnToSpaceCountdown;
+    	if (returnToSpaceCountdown === 0) {
+      		clearInterval(countdownInterval);
+			returnToSpace();
+		}
+	}, 1000);
+}
+
+function returnToSpace() {
+	window.close();
+}
 
 function playSound(sound) {
 	const element = document.getElementById('sfx-' + sound);

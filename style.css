@@ -63,6 +63,10 @@ key {
     background-color: rgba(0,0,0,0.8);
     z-index: 100;
 }
+#extracting {
+  display: none;
+  z-index: 200;
+}
 header {
     z-index: 5;
     position: fixed;
