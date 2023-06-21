@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Explorer</title>
+    <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+    <link href="style.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="favicon.png">
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.153.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.153.0/examples/jsm/"
+    }
+  }
+</script>
+</head>
+<body>
+
+<header class="panel">
+  <div class="progress-bars">
+    <span class="label">Collected:&nbsp;</span> <span class="progress-bar"><span class="progress progress-collected"></span></span>
+    <span class="label">Oxygen:&nbsp;</span> <span class="progress-bar"><span class="progress progress-oxygen" style="width: 100%"></span></span>
+    <span class="label">Jets:&nbsp;</span> <span class="progress-bar"><span class="progress progress-jets" style="width: 100%"></span></span>
+  </div>
+  <key>?</key> for help
+</header>
+
+<div id="loading" class="panel centered-panel">
+  Loading...
+  <div class="progress-bar"><div id="progress"></div></div>
+</div>
+<div id="oxygen-depleted" class="panel centered-panel">
+  Oxygen depleted<br />
+  <key>Esc</key> to return to star chart
+</div>
+<div id="loading-dark-panel"></div>
+
+<div id="help" class="panel centered-panel">
+  <div class="key"><key>&#8593;</key>/<key>W</key> Move forwards</div>
+  <div class="key"><key>&#8595;</key>/<key>A</key> Move backwards</div>
+  <div class="key"><key>&#8592;</key>/<key>S</key> Turn left</div>
+  <div class="key"><key>&#8594;</key>/<key>D</key> Turn right</div>
+  <div class="key"><key>Shift</key> Accelerate</div>
+  <div class="key"><key>Space</key> Jump</div>
+  <div class="key"><key>C</key> Collect artifact</div>
+  <div class="key"><key>Esc</key> Return to star chart</div>
+  Click on world to toggle mouse look
+</div>
+
+<canvas id="canvas"></canvas>
+
+<audio style="display: none;" id="sfx-equip" preload src="item-equip-6904.mp3"></audio>
+<audio style="display: none;" id="sfx-success" preload src="success_bell-6776.mp3"></audio>
+<audio style="display: none;" id="sfx-thrusters" preload src="thrusters_loopwav-14699.mp3"></audio>
+
+<script type="module" src="/main.mjs"></script>
+</body>
+</html>

@@ -208,7 +208,7 @@ function changeStarDetails(star, active) {
     const btn = document.createElement("button");
     btn.innerText = "Explore";
     btn.onclick = function() {
-        window.open("index.html?star=" + starlane + "-" + name, "_blank");
+        window.open("explore.html?star=" + starlane + "-" + name, "_blank");
     }
     btn.classList.add("explore-btn");
     document.getElementById("details").appendChild(btn);
