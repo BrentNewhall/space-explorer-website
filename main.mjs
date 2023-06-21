@@ -187,7 +187,7 @@ function collectArtifact() {
 			artifactsCollected += 1;
 			playSound("equip");
 			updateStatus(numArtifacts);
-			if( artifactsCollected >= 2 ) {
+			if( artifactsCollected >= 10 ) {
 				setTimeout(() => playSound("success"), 1000 );
 			}
 		}
