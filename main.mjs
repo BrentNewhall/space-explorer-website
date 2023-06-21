@@ -93,7 +93,7 @@ function updateCameraPosition( movementSpeed ) {
 		const raycaster = new THREE.Raycaster();
 		raycaster.set(camera.position, direction);
 		const intersects = raycaster.intersectObjects( scene.children );
-		if( intersects.length === 0  ||  intersects[0].distance > 0.15 ) {
+		if( intersects.length === 0  ||  intersects[0].distance > 0.3 ) {
 			// Scale the direction vector by the movement speed and add it to the camera's position
 			camera.position.add( direction.multiplyScalar( speed ) );
 		}
@@ -105,7 +105,7 @@ function updateCameraPosition( movementSpeed ) {
 		const raycaster = new THREE.Raycaster();
 		raycaster.set( camera.position, direction );
 		const intersects = raycaster.intersectObjects( scene.children );
-		if( intersects.length === 0  ||  intersects[0].distance > 0.15 ) {
+		if( intersects.length === 0  ||  intersects[0].distance > 0.3 ) {
 			// Scale the direction vector by the movement speed and add it to the camera's position
 			camera.position.add(direction.multiplyScalar( speed ));
 		}
@@ -135,10 +135,10 @@ function gravity(camera) {
 	const intersects = raycaster.intersectObjects(scene.children);
 	if( intersects.length > 0 ) {
 		const distance = intersects[0].distance;
-		if( distance < 0.05 ) {
+		if( distance < 0.15 ) {
 			camera.position.y += 0.02;
 		}
-		else if( distance > 0.1 ) {
+		else if( distance > 0.2 ) {
 			camera.position.y -= 0.005;
 		}
 	}
@@ -187,6 +187,9 @@ function collectArtifact() {
 			artifactsCollected += 1;
 			playSound("equip");
 			updateStatus(numArtifacts);
+			if( artifactsCollected >= 2 ) {
+				setTimeout(() => playSound("success"), 1000 );
+			}
 		}
 	}
 }
