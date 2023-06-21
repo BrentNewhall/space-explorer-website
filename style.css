@@ -63,6 +63,11 @@ key {
     background-color: rgba(0,0,0,0.8);
     z-index: 100;
 }
+#oxygen-depleted {
+  display: none;
+  text-align: center;
+  z-index: 200;
+}
 header {
     z-index: 5;
     position: fixed;

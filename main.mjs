@@ -1,6 +1,34 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
+/* import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'; */
+
+const maxTime = 10 * 60;
+let oxygen = maxTime;
+
+let movementSpeed = 0.01;
+
+const numArtifacts = 10;
+let artifactsCollected = 0;
+
+const jumpingInitial = 0.2;
+const jumpingGravity = 0.1;
+let jumping = 0;
+
+const maxJets = 1000;
+const jumpJets = 200;
+let jets = 1000;
+
+let worldMap = [
+	[1, 1],
+	[2, 1]
+];
+
+let mouseControls = false;
+const sensitivity = 0.002;
+
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
@@ -10,21 +38,30 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.setSize( window.innerWidth, window.innerHeight );
 
+/* // Create an instance of EffectComposer and set the renderer
+const composer = new EffectComposer(renderer);
+composer.setSize(window.innerWidth, window.innerHeight);
+
+// Create a render pass
+const renderPass = new RenderPass(scene, camera);
+composer.addPass(renderPass);
+
+// Create an UnrealBloomPass and configure its parameters
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+composer.addPass(bloomPass); */
+
 // Add sun
 //const light = new THREE.DirectionalLight( 0xffffff, 1 );
-const light = new THREE.PointLight( 0xffffff, 1, 100 );
-light.position.set( 1, 1, 5 );
-scene.add( light );
+const sun = new THREE.PointLight( 0xffffff, 1, 125 );
+sun.position.set( 1, 25, 1 );
+scene.add( sun );
 
 camera.position.y = 0.1;
 camera.position.z = 5;
+camera.rotation.order = "YXZ";
 
-const numArtifacts = 10;
 let artifactObjects = [];
 let artifactData = [];
-let artifactsCollected = 0;
-
-let movementSpeed = 0.01;
 
 const keys = {
 	KeyW: false,
@@ -38,10 +75,6 @@ const keys = {
 	ArrowUp: false,
 	ArrowDown: false
 }
-
-const jumpingInitial = 0.2;
-const jumpingGravity = 0.1;
-let jumping = 0;
 
 function toggleHidden(id) {
 	let element = document.getElementById(id);
@@ -69,15 +102,43 @@ function setup() {
 		if( e.code === 'Slash' ) {
 			toggleHidden("help");
 		}
+		if( e.code === 'Escape' ) {
+			returnToSpace();
+		}
 	});
 	window.addEventListener('keyup', (e) => {
 		if( e.code in keys ) {
 			keys[e.code] = false;
 		}
 	});
+	// Add mouse controls
+	window.addEventListener('mousemove', (e) => {
+		if( mouseControls ) {
+			camera.rotation.y -= e.movementX * sensitivity;
+			camera.rotation.x -= e.movementY * sensitivity;
+		}
+	});
+	// Request pointer lock on canvas click
+	document.getElementById("canvas").addEventListener("click", () => {
+		if( mouseControls ) {
+			document.exitPointerLock();
+		}
+		else {
+			document.getElementById("canvas").requestPointerLock();
+		}
+	});
+	document.addEventListener("pointerlockchange", () => {
+		if( document.pointerLockElement === document.getElementById("canvas") ) {
+			mouseControls = true;
+		}
+		else {
+			mouseControls = false;
+		}
+	}, false);
 }
 
 function updateCameraPosition( movementSpeed ) {
+	if( oxygen <= 0 )  return;
 	let speed = movementSpeed;
 	if( keys.ShiftLeft ) {
 		if( jets + 1 > 0 ) {
@@ -199,15 +260,10 @@ function animate() {
 	gravity(camera);
 	updateCameraPosition( movementSpeed );
 	requestAnimationFrame( animate );
+	//composer.render();
 	findNearbyArtifacts( artifactObjects, artifactData );
 	renderer.render( scene, camera );
 }
-
-// Load map
-let worldMap = [
-	[1, 1],
-	[2, 1]
-];
 
 function addMapsToScene( tiles, worldMap, scene ) {
 	let x = 0;
@@ -325,23 +381,49 @@ function generateArtifacts( scene, artifactModels ) {
 	}
 }
 
+function generateGlowingCube() {
+	// Create a cube geometry
+	const geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+
+	// Create an inner material with emissive color
+	const innerMaterial = new THREE.MeshBasicMaterial({
+		color: 0x8888ff,
+		emissive: 0x8888ff,
+		side: THREE.BackSide, // Render only the back side of the cube
+  	});
+	// Create an outer material with a transparent material
+const outerMaterial = new THREE.MeshBasicMaterial({
+	color: 0xffffff,
+	transparent: true,
+	opacity: 0.5,
+  });
+// Create an inner cube mesh
+const innerCube = new THREE.Mesh(geometry, innerMaterial);
+
+// Create an outer cube mesh
+const outerCube = new THREE.Mesh(geometry, outerMaterial);
+
+// Add the inner and outer cubes to the scene
+scene.add(innerCube);
+scene.add(outerCube);
+  
+	const light = new THREE.PointLight( 0x8888ff, 1, 5, 2 );
+	light.intensity = 1;
+	innerCube.add( light );
+	innerCube.position.set(0, 0.2, 0);
+	innerCube.position.set(0, 0.2, 0);
+}
+
 function updateStatus(numArtifacts) {
 	const percent = Math.floor((artifactsCollected / numArtifacts) * 100);
 	document.getElementsByClassName("progress-collected")[0].style.width = percent + "%";
 }
-
-const maxJets = 1000;
-const jumpJets = 200;
-let jets = 1000;
 
 function updateJetsBar() {
 	const percent = Math.floor((jets / maxJets) * 100);
 	const progressBar = document.querySelector('.progress-jets');
 	progressBar.style.width = percent + '%';
 }
-
-const maxTime = 10 * 60;
-let oxygen = maxTime;
 
 // Function to update the progress bar
 function updateOxygenBar(progress) {
@@ -359,12 +441,22 @@ function startOxygenCountdown() {
 	
 		if (oxygen <= 0) {
 			clearInterval(countdownInterval);
+			oxygenDepleted();
 		}
 	}, 1000);
 }
   
 // Call the startCountdown function to initiate the countdown
 startOxygenCountdown();
+
+function oxygenDepleted() {
+	document.getElementById("oxygen-depleted").style.display = "block";
+	document.getElementById("loading-dark-panel").style.display = "block";
+}
+
+function returnToSpace() {
+	window.close();
+}
 
 function playSound(sound) {
 	const element = document.getElementById('sfx-' + sound);
