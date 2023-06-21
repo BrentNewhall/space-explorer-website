@@ -1,7 +1,26 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-let returnToSpaceCountdown = 10;
+const maxTime = 10 * 60;
+let oxygen = maxTime;
+
+let movementSpeed = 0.01;
+
+const numArtifacts = 10;
+let artifactsCollected = 0;
+
+const jumpingInitial = 0.2;
+const jumpingGravity = 0.1;
+let jumping = 0;
+
+const maxJets = 1000;
+const jumpJets = 200;
+let jets = 1000;
+
+let worldMap = [
+	[1, 1],
+	[2, 1]
+];
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
@@ -21,12 +40,8 @@ scene.add( light );
 camera.position.y = 0.1;
 camera.position.z = 5;
 
-const numArtifacts = 10;
 let artifactObjects = [];
 let artifactData = [];
-let artifactsCollected = 0;
-
-let movementSpeed = 0.01;
 
 const keys = {
 	KeyW: false,
@@ -40,10 +55,6 @@ const keys = {
 	ArrowUp: false,
 	ArrowDown: false
 }
-
-const jumpingInitial = 0.2;
-const jumpingGravity = 0.1;
-let jumping = 0;
 
 function toggleHidden(id) {
 	let element = document.getElementById(id);
@@ -209,12 +220,6 @@ function animate() {
 	renderer.render( scene, camera );
 }
 
-// Load map
-let worldMap = [
-	[1, 1],
-	[2, 1]
-];
-
 function addMapsToScene( tiles, worldMap, scene ) {
 	let x = 0;
 	let z = 0;
@@ -336,18 +341,11 @@ function updateStatus(numArtifacts) {
 	document.getElementsByClassName("progress-collected")[0].style.width = percent + "%";
 }
 
-const maxJets = 1000;
-const jumpJets = 200;
-let jets = 1000;
-
 function updateJetsBar() {
 	const percent = Math.floor((jets / maxJets) * 100);
 	const progressBar = document.querySelector('.progress-jets');
 	progressBar.style.width = percent + '%';
 }
-
-const maxTime = 10 * 60;
-let oxygen = maxTime;
 
 // Function to update the progress bar
 function updateOxygenBar(progress) {
