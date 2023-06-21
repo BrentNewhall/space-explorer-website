@@ -25,6 +25,9 @@ let worldMap = [
 	[1, 1],
 	[2, 1]
 ];
+if( getURLParameter("star") === "alpha-solara") {
+	worldMap = [[3, 3],[3, 3]];
+}
 
 let mouseControls = false;
 const sensitivity = 0.002;
@@ -74,6 +77,20 @@ const keys = {
 	ArrowRight: false,
 	ArrowUp: false,
 	ArrowDown: false
+}
+
+function getURLParameter(param) {
+	const sPageURL = window.location.search.substring(1);
+    const sURLVariables = sPageURL.split('&');
+    for (let i = 0; i < sURLVariables.length; i++) 
+    {
+        const sParameterName = sURLVariables[i].split('=');
+        if (sParameterName[0] === param) 
+        {
+            return sParameterName[1];
+        }
+    }
+	return null;
 }
 
 function toggleHidden(id) {
@@ -353,7 +370,12 @@ function loadTiles(modelPaths, worldMap, scene) {
 		console.error( 'Error loading map models:', error );
 	});
 }
-const tiles = loadTiles( ['map4.gltf','map5.gltf','map6.gltf','map1.gltf','map2.gltf'], worldMap, scene );
+if( getURLParameter("star") === "alpha-solara") {
+	const tiles = loadTiles( ['map4.gltf','map5.gltf','map6.gltf','map3.gltf'], worldMap, scene );
+}
+else {
+	const tiles = loadTiles( ['map4.gltf','map5.gltf','map6.gltf','map1.gltf','map2.gltf'], worldMap, scene );
+}
 
 // Load sky
 const textureLoader = new THREE.TextureLoader();
@@ -366,16 +388,30 @@ const texture = textureLoader.load( 'sky4.jpg', () => {
 
 const loader = new GLTFLoader();
 
-// Load tower
-loader.load( 'tower.gltf', function ( gltf ) {
-	gltf.scene.position.set(5, 0, -5);
-	gltf.scene.scale.set(0.05, 0.05, 0.05);
-	scene.add( gltf.scene );
-	updateLoadingBar();
+if( getURLParameter("star") === "alpha-solara") {
+	// Load feature
+	loader.load( 'feature1.gltf', function ( gltf ) {
+		gltf.scene.position.set(5, 0, 0);
+		//gltf.scene.scale.set(0.05, 0.05, 0.05);
+		scene.add( gltf.scene );
+		updateLoadingBar();
+	}
+	, undefined, function ( error ) {
+		console.error( error );
+	});
 }
-, undefined, function ( error ) {
-	console.error( error );
-});
+else {
+	// Load tower
+	loader.load( 'tower.gltf', function ( gltf ) {
+		gltf.scene.position.set(5, 0, 0);
+		gltf.scene.scale.set(0.05, 0.05, 0.05);
+		scene.add( gltf.scene );
+		updateLoadingBar();
+	}
+	, undefined, function ( error ) {
+		console.error( error );
+	});
+}
 
 function loadArtifacts() {
 	const modelPaths = ['artifact4.gltf', 'artifact5.gltf', 'artifact6.gltf'];
@@ -409,10 +445,11 @@ function loadArtifacts() {
 }
 
 function generateArtifacts( scene, artifactModels ) {
+	let worldSize = worldMap.length * 10;
 	for( let i = 0; i < 10; i++ ) {
 		const artifactModel = artifactModels[Math.floor(Math.random() * artifactModels.length)];
 		let object = artifactModel.object.clone();
-		object.position.set( Math.random() * 14 - 4, 5, Math.random() * 14 - 4 );
+		object.position.set( Math.random() * worldSize - 5, 5, Math.random() * worldSize - 5 );
 		object.scale.set( 0.05, 0.05, 0.05 );
 		artifactObjects.push( object );
 		artifactData.push( { nearby: false } );
