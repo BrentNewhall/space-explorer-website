@@ -52,7 +52,7 @@ composer.addPass(bloomPass); */
 
 // Add sun
 //const light = new THREE.DirectionalLight( 0xffffff, 1 );
-const sun = new THREE.PointLight( 0xffffff, 1, 125 );
+const sun = new THREE.PointLight( 0xffffff, 1, 0 );
 sun.position.set( 1, 25, 1 );
 scene.add( sun );
 
@@ -265,6 +265,37 @@ function animate() {
 	renderer.render( scene, camera );
 }
 
+function getTile( tiles, id ) {
+	const tile = tiles.filter( (obj) => { return obj.id == id } );
+	return tile[0];
+}
+
+function addBorderTile( tiles, id, scene, x, z, rotation ) {
+	let cornerTile = getTile(tiles, id).object.clone();
+	cornerTile.position.set( x, 0, z );
+	cornerTile.rotation.y += rotation;
+	scene.add(cornerTile);
+}
+
+function addBorderTiles( tiles, worldMap, scene ) {
+	const worldSize = worldMap.length * 10;
+	// Upper left
+	addBorderTile( tiles, 4, scene, -10, -10, 0 ); // Upper left corner
+	addBorderTile( tiles, 4, scene, -10, worldSize, Math.PI / 2 ); // Lower left corner
+	addBorderTile( tiles, 4, scene, worldSize, worldSize, (2 * Math.PI) / 2 ); // Lower right corner
+	addBorderTile( tiles, 4, scene, worldSize, -10, (3 * Math.PI) / 2 ); // Upper right corner
+	for( let i = 0; i < worldMap.length; i++ ) {
+		addBorderTile( tiles, 5, scene, -10, i * 10, 0 ); // Left edge
+		addBorderTile( tiles, 5, scene, i * 10, -10, (3 * Math.PI) / 2 ); // Top edge
+		addBorderTile( tiles, 5, scene, worldSize, i * 10, (2 * Math.PI) / 2 ); // Right edge
+		addBorderTile( tiles, 5, scene, i * 10, worldSize, Math.PI / 2 ); // Bottom edge
+	}
+	let oceanTile = getTile(tiles, 6).object.clone();
+	oceanTile.position.set( 0, -0.1, 0 );
+	oceanTile.scale.set(100, 1, 100);
+	scene.add(oceanTile);
+}
+
 function addMapsToScene( tiles, worldMap, scene ) {
 	let x = 0;
 	let z = 0;
@@ -279,6 +310,7 @@ function addMapsToScene( tiles, worldMap, scene ) {
 		x = 0;
 		z += 10;
 	}
+	addBorderTiles( tiles, worldMap, scene );
 	updateLoadingBar();
 }
 
@@ -313,7 +345,7 @@ function loadTiles(modelPaths, worldMap, scene) {
 		console.error( 'Error loading map models:', error );
 	});
 }
-const tiles = loadTiles( ['map1.gltf','map2.gltf'], worldMap, scene );
+const tiles = loadTiles( ['map4.gltf','map5.gltf','map6.gltf','map1.gltf','map2.gltf'], worldMap, scene );
 
 // Load sky
 const textureLoader = new THREE.TextureLoader();
