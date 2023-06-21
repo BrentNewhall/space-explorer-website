@@ -63,8 +63,9 @@ key {
     background-color: rgba(0,0,0,0.8);
     z-index: 100;
 }
-#extracting {
+#oxygen-depleted {
   display: none;
+  text-align: center;
   z-index: 200;
 }
 header {

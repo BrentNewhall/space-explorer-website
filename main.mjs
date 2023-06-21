@@ -83,6 +83,7 @@ function setup() {
 }
 
 function updateCameraPosition( movementSpeed ) {
+	if( oxygen <= 0 )  return;
 	let speed = movementSpeed;
 	if( keys.ShiftLeft ) {
 		if( jets + 1 > 0 ) {
@@ -345,7 +346,7 @@ function updateJetsBar() {
 	progressBar.style.width = percent + '%';
 }
 
-const maxTime = 10 * 60;
+const maxTime = 10// * 60;
 let oxygen = maxTime;
 
 // Function to update the progress bar
@@ -364,7 +365,7 @@ function startOxygenCountdown() {
 	
 		if (oxygen <= 0) {
 			clearInterval(countdownInterval);
-			startReturnToSpace();
+			oxygenDepleted();
 		}
 	}, 1000);
 }
@@ -372,17 +373,9 @@ function startOxygenCountdown() {
 // Call the startCountdown function to initiate the countdown
 startOxygenCountdown();
 
-function startReturnToSpace() {
-	document.getElementById("extracting").style.display = "block";
+function oxygenDepleted() {
+	document.getElementById("oxygen-depleted").style.display = "block";
 	document.getElementById("loading-dark-panel").style.display = "block";
-	let countdownInterval = setInterval(function() {
-		returnToSpaceCountdown--;
-		document.getElementById("return-to-space-countdown").textContent = returnToSpaceCountdown;
-    	if (returnToSpaceCountdown === 0) {
-      		clearInterval(countdownInterval);
-			returnToSpace();
-		}
-	}, 1000);
 }
 
 function returnToSpace() {
