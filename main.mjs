@@ -90,10 +90,15 @@ function setup() {
 	// Add keyboard controls
 	window.addEventListener('keydown', (e) => {
 		if( e.code in keys ) {
+			if( e.code === 'ShiftLeft'  &&  ! keys[e.code] ) {
+				playSound( "thrusters" );
+			}
 			keys[e.code] = true;
 		}
 		if( e.code === 'Space' ) {
 			if( jets - jumpJets >= 0 ) {
+				playSound( "thrusters" );
+				setTimeout( () => { stopSound( "thrusters" ); }, 1000 );
 				jets -= jumpJets;
 				updateJetsBar();
 				jumping = jumpingInitial;
@@ -109,6 +114,9 @@ function setup() {
 	window.addEventListener('keyup', (e) => {
 		if( e.code in keys ) {
 			keys[e.code] = false;
+			if( e.code === 'ShiftLeft' ) {
+				stopSound( "thrusters" );
+			}
 		}
 	});
 	// Add mouse controls
@@ -494,6 +502,15 @@ function playSound(sound) {
 	const element = document.getElementById('sfx-' + sound);
 	if( typeof element !== 'undefined'  &&  element !== null )
 		element.play();
+	else
+		console.error( "Sound not found: " + sound );
+}
+
+function stopSound(sound) {
+	let element = document.getElementById('sfx-' + sound);
+	if( typeof element !== 'undefined'  &&  element !== null ) {
+		element.pause();
+	}
 	else
 		console.error( "Sound not found: " + sound );
 }
