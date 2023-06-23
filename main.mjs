@@ -228,6 +228,7 @@ function updateCameraPosition( movementSpeed ) {
 	if( keys.KeyW  ||  keys.ArrowUp ) {
 		// Get the direction vector of the camera
 		const direction = camera.getWorldDirection(new THREE.Vector3());
+		direction.y = 0;
 		// Check for any objects in front of the camera
 		const raycaster = new THREE.Raycaster();
 		raycaster.set(camera.position, direction);
@@ -240,6 +241,7 @@ function updateCameraPosition( movementSpeed ) {
 	if( keys.KeyS  ||  keys.ArrowDown ) {
 		// Get the direction vector of the camera
 		const direction = camera.getWorldDirection(new THREE.Vector3()).negate();
+		direction.y = 0;
 		// Check for any objects in front of the camera
 		const raycaster = new THREE.Raycaster();
 		raycaster.set( camera.position, direction );
