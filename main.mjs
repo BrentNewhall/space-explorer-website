@@ -28,12 +28,64 @@ let worldMap = [
 if( getURLParameter("star") === "alpha-solara") {
 	worldMap = [[3, 3, 3], [3, 7, 3], [3, 3, 3]];
 }
+let star_id = 0;
+if( getURLParameter("id") !== null ) {
+	star_id = getURLParameter("id");
+	if( star_id > 1 ) {
+		star_id = 0;
+	}
+}
+
+let tiles = [];
+let collectibles = [];
 
 let mouseControls = false;
 const sensitivity = 0.002;
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+function getStarDataWeb() {
+	const body = {
+		"action": "get-star",
+		"id": star_id
+	}
+	const options = {
+			method: "POST",
+			mode: "cors",
+			body: JSON.stringify(body)
+	}
+	fetch("https://t39cwu86h6.execute-api.us-east-1.amazonaws.com/dev/artifacts", options)
+	.then(data => data.json())
+	.then(data => {
+		updateLoadingBar();
+		if( "map" in data ) {
+			worldMap = data["map"];
+		}
+		if( "tiles" in data ) {
+			const tileFilenames = data["tiles"].map(tile => tile = "map" + tile + ".gltf");
+			tiles = loadTiles( tileFilenames, worldMap, scene );
+		}
+		if( "sky" in data ) {
+			loadSky( data["sky"] );
+		}
+		if( "collectibles" in data ) {
+			collectibles = data["collectibles"].map(name => name += ".gltf");
+		}
+		if( "features" in data ) {
+			for( let feature of data["features"] ) {
+				const filename = feature["filename"] + ".gltf";
+				const x = feature["x"];
+				const z = feature["z"];
+				loadFeature( filename, x, z );
+			}
+		}
+		else {
+			// No features to load, so progress loading bar
+			updateLoadingBar();
+		}
+	});
+}
 
 const renderer = new THREE.WebGLRenderer({
 	canvas: document.getElementById("canvas"),
@@ -160,6 +212,7 @@ function setup() {
 			mouseControls = false;
 		}
 	}, false);
+	getStarDataWeb();
 }
 
 function updateCameraPosition( movementSpeed ) {
@@ -363,48 +416,33 @@ function loadTiles(modelPaths, worldMap, scene) {
 	Promise.all( loadPromises )
 	.then(() => {
 		addMapsToScene( tileModels, worldMap, scene );
-		loadArtifacts();
+		loadArtifacts( collectibles );
 	})
 	.catch((error) => {
 		// Error occurred during loading
 		console.error( 'Error loading map models:', error );
 	});
 }
-if( getURLParameter("star") === "alpha-solara") {
-	const tiles = loadTiles( ['map4.gltf','map5.gltf','map6.gltf','map3.gltf', 'map7.gltf'], worldMap, scene );
-}
-else {
-	const tiles = loadTiles( ['map4.gltf','map5.gltf','map6.gltf','map1.gltf','map2.gltf'], worldMap, scene );
-}
 
 // Load sky
-const textureLoader = new THREE.TextureLoader();
-const texture = textureLoader.load( 'sky4.jpg', () => {
-	const rt = new THREE.WebGLCubeRenderTarget(texture.image.height);
-	rt.fromEquirectangularTexture(renderer, texture);
-	scene.background = rt.texture;
-	updateLoadingBar();
-});
+function loadSky(filename) {
+	const textureLoader = new THREE.TextureLoader();
+	const texture = textureLoader.load( filename, () => {
+		const rt = new THREE.WebGLCubeRenderTarget(texture.image.height);
+		rt.fromEquirectangularTexture(renderer, texture);
+		scene.background = rt.texture;
+		updateLoadingBar();
+	});
+}
 
 const loader = new GLTFLoader();
 
-if( getURLParameter("star") === "alpha-solara") {
-	// Load feature
-	loader.load( 'feature1.gltf', function ( gltf ) {
-		gltf.scene.position.set(5, 0, 0);
-		//gltf.scene.scale.set(0.05, 0.05, 0.05);
-		scene.add( gltf.scene );
-		updateLoadingBar();
-	}
-	, undefined, function ( error ) {
-		console.error( error );
-	});
-}
-else {
-	// Load tower
-	loader.load( 'tower.gltf', function ( gltf ) {
-		gltf.scene.position.set(5, 0, 0);
-		gltf.scene.scale.set(0.05, 0.05, 0.05);
+function loadFeature(filename, x, z) {
+	loader.load( filename, function ( gltf ) {
+		gltf.scene.position.set(x, 0, z);
+		if( filename === "tower.gltf" ) {
+			gltf.scene.scale.set(0.05, 0.05, 0.05);
+		}
 		scene.add( gltf.scene );
 		updateLoadingBar();
 	}
@@ -413,8 +451,7 @@ else {
 	});
 }
 
-function loadArtifacts() {
-	const modelPaths = ['artifact4.gltf', 'artifact5.gltf', 'artifact6.gltf'];
+function loadArtifacts(modelPaths) {
 	let artifactModels = [];
 	const loadPromises = modelPaths.map( (modelPath) => {
 		return new Promise( (resolve, reject) => {
@@ -553,7 +590,7 @@ function stopSound(sound) {
 }
 
 function updateLoadingBar() {
-	const totalSteps = 4;
+	const totalSteps = 5;
 	if( typeof updateLoadingBar.steps === 'undefined' ) {
 		updateLoadingBar.steps = 0;
 	}
