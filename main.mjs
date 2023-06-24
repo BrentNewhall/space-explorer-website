@@ -31,7 +31,7 @@ if( getURLParameter("star") === "alpha-solara") {
 let star_id = 0;
 if( getURLParameter("id") !== null ) {
 	star_id = getURLParameter("id");
-	if( star_id > 1 ) {
+	if( star_id > 2 ) {
 		star_id = 0;
 	}
 }
@@ -172,9 +172,6 @@ function setup() {
 				updateJetsBar();
 				jumping = jumpingInitial;
 			}
-		}
-		if( e.code === 'Slash' ) {
-			toggleHidden("help");
 		}
 		if( e.code === 'Escape' ) {
 			returnToSpace();
@@ -328,6 +325,7 @@ function collectArtifact() {
 			artifactsCollected += 1;
 			playSound("equip");
 			updateStatus(numArtifacts);
+			updateStat("artifacts");
 			if( artifactsCollected >= 10 ) {
 				setTimeout(() => playSound("success"), 1000 );
 			}

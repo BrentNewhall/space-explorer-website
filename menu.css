@@ -1,0 +1,32 @@
+/* Main menu */
+#main-menu {
+    display: none;
+    z-index: 100;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    border-bottom: 1px solid black;
+}
+.tab {
+    padding: 10px;
+    background-color: lightgray;
+    cursor: pointer;
+    border: 1px solid black;
+}
+.tab:hover {
+    background-color: gray;
+}
+.tab.active {
+    color: #8888ff;
+}
+
+/* Tab Content */
+.tab-content {
+    display: none;
+    padding: 10px;
+}
+.tab-content.active {
+    display: block;
+}
