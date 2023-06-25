@@ -325,14 +325,14 @@ function collectArtifact() {
 			artifactsCollected += 1;
 			playSound("equip");
 			updateStatus(numArtifacts);
-			updateStat("artifacts");
+			updateLocalUserData("artifacts");
+			sendUserDataWeb(0);
 			if( artifactsCollected >= 10 ) {
 				setTimeout(() => playSound("success"), 1000 );
 			}
 		}
 	}
 }
-
 
 function animate() {
 	gravity(camera);
@@ -604,6 +604,9 @@ function updateLoadingBar() {
 		document.getElementById("progress").style.width = width + "%";
 	}
 }
+
+import { getUserDataWeb, updateLocalUserData, sendUserDataWeb } from '/user-data.mjs';
+getUserDataWeb(0); // User ID = 0
 
 setup();
 animate();
