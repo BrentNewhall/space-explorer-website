@@ -30,3 +30,12 @@
 .tab-content.active {
     display: block;
 }
+
+h2 {
+    margin: 0.25em 0em 0em 0em;
+    font-size: 125%;
+    text-align: center;
+}
+.collection {
+    text-align: right;
+}

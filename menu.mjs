@@ -1,15 +1,3 @@
-let stats = {
-    "stars": 11,
-    "artifacts": 0,
-    "art": 0,
-    "energy-crystals": 0
-}
-
-function updateStat(name, value = 1) {
-    stats[name] += value;
-    document.getElementById("collected-" + name).innerText = stats[name];
-}
-
 function createMenu() {
     let menu = document.createElement('div');
     menu.id = 'main-menu';
@@ -21,10 +9,14 @@ function createMenu() {
             <div class="tab" onclick="openTab(event, 'tab2')">Controls</div>
         </div>
         <div id="tab1" class="tab-content active">
-            <div class="collection">Stars discovered: <span id="stars-discovered">11</span></div>
-            <div class="collection">Artifacts: <span id="collected-artifacts">0</span></div>
-            <div class="collection">Art: <span id="collected-art">0</span></div>
-            <div class="collection">Energy crystals: <span id="collected-energy-crystals">0</span></div>
+            <table><tbody>
+            <tr><td class="collection">Stars discovered:</td><td id="stars-discovered">11</td></tr>
+            <tr><td colspan="2"><h2>Collections</h2></td></tr>
+            <tr><td class="collection">Artifacts:</td><td id="collected-artifacts">0</td></tr>
+            <tr><td class="collection">Energy crystals:</td><td id="collected-energy-crystals">0</td></tr>
+            <tr><td class="collection">Heat Crystals:</td><td id="collected-heat-crystals">0</td></tr>
+            <tr><td class="collection">Machines:</td><td id="collected-machines">0</td></tr>
+            </tbody></table>
         </div>
         <div id="tab2" class="tab-content">
             <div class="key"><key>&#8593;</key>/<key>W</key> Move forwards</div>
@@ -36,8 +28,7 @@ function createMenu() {
             <div class="key"><key>C</key> Collect artifact</div>
             <div class="key"><key>Esc</key> Return to star chart</div>
             Click on world to toggle mouse look
-        </div>
-        `;
+        </div>`;
     document.body.appendChild(menu);
     const tabs = document.getElementsByClassName("tab");
     for (var i = 0; i < tabs.length; i++) {
