@@ -606,7 +606,7 @@ function updateLoadingBar() {
 }
 
 import { getUserDataWeb, updateLocalUserData, sendUserDataWeb } from '/user-data.mjs';
-getUserDataWeb(0); // User ID = 0
+getUserDataWeb(0, true); // User ID = 0
 
 setup();
 animate();
