@@ -5,8 +5,8 @@ function createMenu() {
     menu.classList.add('centered-panel');
     menu.innerHTML = `
         <div class="tabs">
-            <div class="tab active" onclick="openTab(event, 'tab1')">Stats</div>
-            <div class="tab" onclick="openTab(event, 'tab2')">Controls</div>
+            <div class="tab active" id="tab-1">Stats</div>
+            <div class="tab" id="tab-2">Controls</div>
         </div>
         <div id="tab1" class="tab-content active">
             <table><tbody>
@@ -33,7 +33,7 @@ function createMenu() {
     const tabs = document.getElementsByClassName("tab");
     for (var i = 0; i < tabs.length; i++) {
         tabs[i].addEventListener("click", function(evt) {
-            openTab(evt, this.id);
+            openTab(evt, evt.target.id.replace("-",""));
         });
     }
     document.addEventListener('keydown', function(e) {

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { getUserDataWeb, user_data } from './user-data.mjs';
 
 // Create a scene
 const scene = new THREE.Scene();
@@ -316,3 +317,64 @@ function onScroll(event) {
 document.addEventListener('wheel', onScroll, false);
 
 animate();
+
+function startStarlaneDiv( starlaneName ) {
+    const starlaneDiv = document.createElement("div");
+    starlaneDiv.id = starlaneName.toLowerCase();
+    const nameDiv = document.createElement("div");
+    nameDiv.classList.add("starlane-name");
+    nameDiv.onclick = function() {
+        showHideStarlane(starlaneName.toLowerCase());
+    }
+    const bulletSpan = document.createElement("span");
+    bulletSpan.id = starlaneName.toLowerCase() + "-bullet";
+    bulletSpan.innerHTML = "&#9656;";
+    nameDiv.innerText = "Starlane " + starlaneName;
+    nameDiv.prepend(bulletSpan);
+    starlaneDiv.appendChild(nameDiv);
+    const detailsDiv = document.createElement("div");
+    detailsDiv.id = "starlane-" + starlaneName.toLowerCase() + "-details";
+    detailsDiv.classList.add("starlane-details");
+    starlaneDiv.appendChild(detailsDiv);
+    return starlaneDiv;
+}
+
+function generateStarsMenu(user_data) {
+    let n = user_data["stars"];
+    let menu = document.getElementById("starlanes");
+    let currStarlaneDiv = startStarlaneDiv( allStars[0]["starlane"] );
+    let currStarlane = "";
+    for( let i = 0; i < n; i++ ) {
+        if( currStarlane !== allStars[i]["starlane"] ) {
+            console.log(currStarlane, allStars[i]["starlane"])
+            if( currStarlane !== "" ) {
+                menu.append(currStarlaneDiv);
+                currStarlaneDiv = startStarlaneDiv( allStars[i]["starlane"] );
+            }
+            currStarlane = allStars[i]["starlane"];    
+        }
+        let starSpan = document.createElement("span");
+        starSpan.classList.add("clickable");
+        starSpan.id = allStars[i]["starlane"].toLowerCase() + "-" + allStars[i]["name"].toLowerCase();
+        starSpan.onclick = function() {
+            makeStarActive(i);
+        }
+        starSpan.innerText = allStars[i]["name"] + " ";
+        currStarlaneDiv.childNodes[1].appendChild(starSpan);
+    }
+    menu.append(currStarlaneDiv);
+    // Append details div
+    const detailsDiv = document.createElement("div");
+    detailsDiv.id = "details";
+    menu.appendChild(detailsDiv);
+}
+
+// Call generateStarsMenu() after user_data is loaded
+let waitToGenerateStarsMenu = setInterval( () => {
+    if( typeof user_data !== "undefined"  &&  user_data["loaded"] === true ) {
+        generateStarsMenu(user_data);
+        clearInterval(waitToGenerateStarsMenu);
+    }
+}, 250)
+
+getUserDataWeb(0, false);

@@ -1,4 +1,5 @@
 let user_data = {
+    "loaded": false,
     "stars": 0,
     "artifacts": 0,
     "energy_crystals": 0,
@@ -6,15 +7,17 @@ let user_data = {
     "machines": 0
 }
 
+function updateCollectionPanel(user_data) {
+    document.getElementById("stars-discovered").innerText = user_data.stars;
+    document.getElementById("collected-artifacts").innerText = user_data.artifacts;
+    document.getElementById("collected-energy-crystals").innerText = user_data.energy_crystals;
+    document.getElementById("collected-heat-crystals").innerText = user_data.heat_crystals;
+    document.getElementById("collected-machines").innerText = user_data.machines;
+}
+
 function updateLocalUserData(stat, value = 1) {
     if( stat in user_data ) {
         user_data[stat] += parseInt(value);
-        if( stat == "stars" ) {
-            document.getElementById("stars-discovered").innerText = user_data[stat];
-        }
-        else {
-            document.getElementById("collected-" + stat.replace("_","-")).innerText = user_data[stat];
-        }
     }
 }
 
@@ -24,7 +27,7 @@ function updateUserDataFromWeb( field, data ) {
     }
 }
 
-function getUserDataWeb(user_id) {
+function getUserDataWeb(user_id, updatePanel = false) {
     const body = {
         "action": "get-user-data",
         "id": user_id
@@ -42,6 +45,10 @@ function getUserDataWeb(user_id) {
         updateUserDataFromWeb("energy_crystals", data);
         updateUserDataFromWeb("heat_crystals", data);
         updateUserDataFromWeb("machines", data);
+        if( updatePanel ) {
+            updateCollectionPanel(user_data);
+        }
+        user_data["loaded"] = true;
     });
 }
 
@@ -63,4 +70,4 @@ function sendUserDataWeb(user_id) {
     });
 }
 
-export { getUserDataWeb, sendUserDataWeb, updateLocalUserData }
+export { getUserDataWeb, sendUserDataWeb, updateLocalUserData, user_data }
